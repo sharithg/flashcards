@@ -1,0 +1,2226 @@
+[
+  {
+    "device": "desktop",
+    "name": "library",
+    "text": "Recall\nLibrary\nCreate\nYour library\n✨\nStart a streak\nStudy a little every day\n18 terms to learn\nacross 2 sets\nSort:\nRecently studied\nA–Z\nLeast mastered\nCell Biology\n\n8 terms · Not studied yet\n\nOrganelles and what they do.\n\n0 mastered · 0 learning · 8 new\n\nStart learning 8 terms\nSpanish: Everyday Basics\n\n10 terms · Not studied yet\n\nCommon words and phrases for getting around.\n\n0 mastered · 0 learning · 10 new\n\nStart learning 10 terms\nNew set\nPaste a list from a doc or spreadsheet to import it",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 70.484375,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": "Search sets",
+        "title": null,
+        "width": 645.703125,
+        "height": 40
+      },
+      {
+        "tag": "SELECT",
+        "text": "Recently studied\nA–Z\nLeast mastered",
+        "label": null,
+        "title": null,
+        "width": 137,
+        "height": 38
+      },
+      {
+        "tag": "A",
+        "text": "Cell Biology",
+        "label": null,
+        "title": null,
+        "width": 105.46875,
+        "height": 23
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Pin set to top",
+        "title": "Pin to top",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Start learning 8 terms",
+        "label": null,
+        "title": null,
+        "width": 374,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 224.796875,
+        "height": 23
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Pin set to top",
+        "title": "Pin to top",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Start learning 10 terms",
+        "label": null,
+        "title": null,
+        "width": 374,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "New set\nPaste a list from a doc or spreadsheet to import it",
+        "label": null,
+        "title": null,
+        "width": 416,
+        "height": 192
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "desktop",
+    "name": "overview",
+    "text": "Recall\nLibrary\nCreate\nSpanish: Everyday Basics\n\nCommon words and phrases for getting around.\n\nEdit\n0\nmastered\n0\nlearning\n10\nnew\nNot studied yet\nFlashcards\nFlip through cards\nLearn\nAdaptive practice\nTest\nCheck what you know\nMatch\nRace the clock\nTERM\n\nhola\n\nClick or press Space to flip\n\nDEFINITION\n\nhello\n\nShuffle\n1 / 10\nExpand\nTerms in this set (10)\nAll\nStarred (0)\nhola\nhello\ngracias\nthank you\npor favor\nplease\nel agua\nwater\nla biblioteca\nlibrary\nel perro\ndog\nla manzana\napple\nmañana\ntomorrow\n¿Dónde está el baño?\nWhere is the bathroom?\nMe llamo…\nMy name is…\n\n10 terms · Add or remove terms",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 70.484375,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Edit",
+        "label": null,
+        "title": null,
+        "width": 84.140625,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "More options",
+        "title": "More options",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards\nFlip through cards",
+        "label": null,
+        "title": null,
+        "width": 203,
+        "height": 70
+      },
+      {
+        "tag": "A",
+        "text": "Learn\nAdaptive practice",
+        "label": null,
+        "title": null,
+        "width": 203,
+        "height": 70
+      },
+      {
+        "tag": "A",
+        "text": "Test\nCheck what you know",
+        "label": null,
+        "title": null,
+        "width": 203,
+        "height": 70
+      },
+      {
+        "tag": "A",
+        "text": "Match\nRace the clock",
+        "label": null,
+        "title": null,
+        "width": 203,
+        "height": 70
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Shuffle",
+        "label": null,
+        "title": "Shuffle (S)",
+        "width": 90.515625,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Previous card",
+        "title": "Previous (←)",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Next card",
+        "title": "Next (→)",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Keyboard shortcuts (?)",
+        "title": "Keyboard shortcuts (?)",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Expand",
+        "label": null,
+        "title": "Fullscreen (F)",
+        "width": 92.109375,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "All",
+        "label": null,
+        "title": null,
+        "width": 41.78125,
+        "height": 28
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Starred (0)",
+        "label": null,
+        "title": null,
+        "width": 95.71875,
+        "height": 28
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit hola",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit gracias",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit por favor",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit el agua",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit la biblioteca",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit el perro",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit la manzana",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit mañana",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit ¿Dónde está el baño?",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit Me llamo…",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "Add or remove terms",
+        "label": null,
+        "title": null,
+        "width": 139.765625,
+        "height": 18
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "desktop",
+    "name": "flashcards",
+    "text": "Recall\nLibrary\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nTERM\n\nhola\n\nClick or press Space to flip\n\nDEFINITION\n\nhello\n\nOptions\nShuffle\n1 / 10\nFullscreen",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 70.484375,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 202.96875,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards",
+        "label": null,
+        "title": null,
+        "width": 119.765625,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Learn",
+        "label": null,
+        "title": null,
+        "width": 83.796875,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Test",
+        "label": null,
+        "title": null,
+        "width": 74.53125,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Match",
+        "label": null,
+        "title": null,
+        "width": 88.15625,
+        "height": 32
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Options",
+        "label": null,
+        "title": "Study options",
+        "width": 94.703125,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Shuffle",
+        "label": null,
+        "title": "Shuffle (S)",
+        "width": 90.515625,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Previous card",
+        "title": "Previous (←)",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Next card",
+        "title": "Next (→)",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Keyboard shortcuts (?)",
+        "title": "Keyboard shortcuts (?)",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Fullscreen",
+        "label": null,
+        "title": "Fullscreen (F)",
+        "width": 111.84375,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "desktop",
+    "name": "learn",
+    "text": "Recall\nLibrary\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nAnswer with:\nDefinition\nTerm\n0\nmastered\n0\nlearning\n10\nnew\nLearn Spanish: Everyday Basics\n\nWork through rounds of 7 terms. Answer a multiple-choice question first, then type the answer from memory to master it.\n\nStart learning",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 70.484375,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 202.96875,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards",
+        "label": null,
+        "title": null,
+        "width": 119.765625,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Learn",
+        "label": null,
+        "title": null,
+        "width": 83.796875,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Test",
+        "label": null,
+        "title": null,
+        "width": 74.53125,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Match",
+        "label": null,
+        "title": null,
+        "width": 88.15625,
+        "height": 32
+      },
+      {
+        "tag": "SELECT",
+        "text": "Definition\nTerm",
+        "label": null,
+        "title": null,
+        "width": 90,
+        "height": 34
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Start learning",
+        "label": null,
+        "title": null,
+        "width": 161.421875,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "desktop",
+    "name": "test",
+    "text": "Recall\nLibrary\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nSet up your test\nQuestions (max 10)\nAnswer with\nDefinition\nTerm\nQuestion types\nTrue / False\nMultiple choice\nWritten\nStart test",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 70.484375,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 202.96875,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards",
+        "label": null,
+        "title": null,
+        "width": 119.765625,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Learn",
+        "label": null,
+        "title": null,
+        "width": 83.796875,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Test",
+        "label": null,
+        "title": null,
+        "width": 74.53125,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Match",
+        "label": null,
+        "title": null,
+        "width": 88.15625,
+        "height": 32
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 80,
+        "height": 42
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Definition",
+        "label": null,
+        "title": null,
+        "width": 97.109375,
+        "height": 32
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Term",
+        "label": null,
+        "title": null,
+        "width": 64.96875,
+        "height": 32
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 16,
+        "height": 16
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 16,
+        "height": 16
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 16,
+        "height": 16
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Start test",
+        "label": null,
+        "title": null,
+        "width": 446,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "desktop",
+    "name": "match",
+    "text": "Recall\nLibrary\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nReady to play?\n\nMatch each term with its definition as fast as you can. Wrong matches add 1 second to your time.\n\nStart game",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 70.484375,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 202.96875,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards",
+        "label": null,
+        "title": null,
+        "width": 119.765625,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Learn",
+        "label": null,
+        "title": null,
+        "width": 83.796875,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Test",
+        "label": null,
+        "title": null,
+        "width": 74.53125,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Match",
+        "label": null,
+        "title": null,
+        "width": 88.15625,
+        "height": 32
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Start game",
+        "label": null,
+        "title": null,
+        "width": 141.53125,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "desktop",
+    "name": "create",
+    "text": "Recall\nLibrary\nCreate\nCreate a new study set\nCreate\nImport\n3 cards\n1\nTERM\nDEFINITION\n2\nTERM\nDEFINITION\n3\nTERM\nDEFINITION\nAdd card\nCreate set",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 70.484375,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 84.953125,
+        "height": 44
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": "Title",
+        "title": null,
+        "width": 848,
+        "height": 54
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": "Description",
+        "title": null,
+        "width": 848,
+        "height": 74
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Import",
+        "label": null,
+        "title": null,
+        "width": 102.453125,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move up",
+        "title": "Move up",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move down",
+        "title": "Move down",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Delete card",
+        "title": "Delete card",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 391,
+        "height": 42
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 391,
+        "height": 42
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move up",
+        "title": "Move up",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move down",
+        "title": "Move down",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Delete card",
+        "title": "Delete card",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 391,
+        "height": 42
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 391,
+        "height": 42
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move up",
+        "title": "Move up",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move down",
+        "title": "Move down",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Delete card",
+        "title": "Delete card",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 391,
+        "height": 42
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 391,
+        "height": 42
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Add card",
+        "label": null,
+        "title": null,
+        "width": 848,
+        "height": 76
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Create set",
+        "label": null,
+        "title": null,
+        "width": 135.6875,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "mobile",
+    "name": "library",
+    "text": "Recall\nCreate\nYour library\n✨\nStart a streak\nStudy a little every day\n18 terms to learn\nacross 2 sets\nSort:\nRecently studied\nA–Z\nLeast mastered\nCell Biology\n\n8 terms · Not studied yet\n\nOrganelles and what they do.\n\n0 mastered · 0 learning · 8 new\n\nStart learning 8 terms\nSpanish: Everyday Basics\n\n10 terms · Not studied yet\n\nCommon words and phrases for getting around.\n\n0 mastered · 0 learning · 10 new\n\nStart learning 10 terms\nNew set\nPaste a list from a doc or spreadsheet to import it",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": "Search sets",
+        "title": null,
+        "width": 358,
+        "height": 40
+      },
+      {
+        "tag": "SELECT",
+        "text": "Recently studied\nA–Z\nLeast mastered",
+        "label": null,
+        "title": null,
+        "width": 137,
+        "height": 38
+      },
+      {
+        "tag": "A",
+        "text": "Cell Biology",
+        "label": null,
+        "title": null,
+        "width": 105.46875,
+        "height": 23
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Pin set to top",
+        "title": "Pin to top",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Start learning 8 terms",
+        "label": null,
+        "title": null,
+        "width": 316,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 224.796875,
+        "height": 23
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Pin set to top",
+        "title": "Pin to top",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Start learning 10 terms",
+        "label": null,
+        "title": null,
+        "width": 316,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "New set\nPaste a list from a doc or spreadsheet to import it",
+        "label": null,
+        "title": null,
+        "width": 358,
+        "height": 192
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "mobile",
+    "name": "overview",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\n\nCommon words and phrases for getting around.\n\nEdit\n0\nmastered\n0\nlearning\n10\nnew\nNot studied yet\nFlashcards\nFlip through cards\nLearn\nAdaptive practice\nTest\nCheck what you know\nMatch\nRace the clock\nTERM\n\nhola\n\nClick or press Space to flip\n\nDEFINITION\n\nhello\n\n1 / 10\nTerms in this set (10)\nAll\nStarred (0)\nhola\nhello\ngracias\nthank you\npor favor\nplease\nel agua\nwater\nla biblioteca\nlibrary\nel perro\ndog\nla manzana\napple\nmañana\ntomorrow\n¿Dónde está el baño?\nWhere is the bathroom?\nMe llamo…\nMy name is…\n\n10 terms · Add or remove terms",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Edit",
+        "label": null,
+        "title": null,
+        "width": 84.140625,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "More options",
+        "title": "More options",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards\nFlip through cards",
+        "label": null,
+        "title": null,
+        "width": 173,
+        "height": 70
+      },
+      {
+        "tag": "A",
+        "text": "Learn\nAdaptive practice",
+        "label": null,
+        "title": null,
+        "width": 173,
+        "height": 70
+      },
+      {
+        "tag": "A",
+        "text": "Test\nCheck what you know",
+        "label": null,
+        "title": null,
+        "width": 173,
+        "height": 70
+      },
+      {
+        "tag": "A",
+        "text": "Match\nRace the clock",
+        "label": null,
+        "title": null,
+        "width": 173,
+        "height": 70
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": null,
+        "title": "Shuffle (S)",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Previous card",
+        "title": "Previous (←)",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Next card",
+        "title": "Next (→)",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Keyboard shortcuts (?)",
+        "title": "Keyboard shortcuts (?)",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": null,
+        "title": "Fullscreen (F)",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "All",
+        "label": null,
+        "title": null,
+        "width": 41.78125,
+        "height": 28
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Starred (0)",
+        "label": null,
+        "title": null,
+        "width": 95.71875,
+        "height": 28
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit hola",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit gracias",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit por favor",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit el agua",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit la biblioteca",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit el perro",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit la manzana",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit mañana",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit ¿Dónde está el baño?",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "",
+        "label": "Edit Me llamo…",
+        "title": "Edit",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "A",
+        "text": "Add or remove terms",
+        "label": null,
+        "title": null,
+        "width": 139.765625,
+        "height": 18
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "mobile",
+    "name": "flashcards",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nTERM\n\nhola\n\nClick or press Space to flip\n\nDEFINITION\n\nhello\n\n1 / 10",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 202.96875,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards",
+        "label": null,
+        "title": null,
+        "width": 119.765625,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Learn",
+        "label": null,
+        "title": null,
+        "width": 83.796875,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Test",
+        "label": null,
+        "title": null,
+        "width": 74.53125,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Match",
+        "label": null,
+        "title": null,
+        "width": 88.15625,
+        "height": 32
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Star",
+        "title": "Star",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": null,
+        "title": "Study options",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": null,
+        "title": "Shuffle (S)",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Previous card",
+        "title": "Previous (←)",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Next card",
+        "title": "Next (→)",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Keyboard shortcuts (?)",
+        "title": "Keyboard shortcuts (?)",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": null,
+        "title": "Fullscreen (F)",
+        "width": 36,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "mobile",
+    "name": "learn",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nAnswer with:\nDefinition\nTerm\n0\nmastered\n0\nlearning\n10\nnew\nLearn Spanish: Everyday Basics\n\nWork through rounds of 7 terms. Answer a multiple-choice question first, then type the answer from memory to master it.\n\nStart learning",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 202.96875,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards",
+        "label": null,
+        "title": null,
+        "width": 119.765625,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Learn",
+        "label": null,
+        "title": null,
+        "width": 83.796875,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Test",
+        "label": null,
+        "title": null,
+        "width": 74.53125,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Match",
+        "label": null,
+        "title": null,
+        "width": 88.15625,
+        "height": 32
+      },
+      {
+        "tag": "SELECT",
+        "text": "Definition\nTerm",
+        "label": null,
+        "title": null,
+        "width": 90,
+        "height": 34
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Start learning",
+        "label": null,
+        "title": null,
+        "width": 161.421875,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "mobile",
+    "name": "test",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nSet up your test\nQuestions (max 10)\nAnswer with\nDefinition\nTerm\nQuestion types\nTrue / False\nMultiple choice\nWritten\nStart test",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 202.96875,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards",
+        "label": null,
+        "title": null,
+        "width": 119.765625,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Learn",
+        "label": null,
+        "title": null,
+        "width": 83.796875,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Test",
+        "label": null,
+        "title": null,
+        "width": 74.53125,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Match",
+        "label": null,
+        "title": null,
+        "width": 88.15625,
+        "height": 32
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 80,
+        "height": 42
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Definition",
+        "label": null,
+        "title": null,
+        "width": 97.109375,
+        "height": 32
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Term",
+        "label": null,
+        "title": null,
+        "width": 64.96875,
+        "height": 32
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 16,
+        "height": 16
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 16,
+        "height": 16
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 16,
+        "height": 16
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Start test",
+        "label": null,
+        "title": null,
+        "width": 308,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "mobile",
+    "name": "match",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nReady to play?\n\nMatch each term with its definition as fast as you can. Wrong matches add 1 second to your time.\n\nStart game",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Spanish: Everyday Basics",
+        "label": null,
+        "title": null,
+        "width": 202.96875,
+        "height": 36
+      },
+      {
+        "tag": "A",
+        "text": "Flashcards",
+        "label": null,
+        "title": null,
+        "width": 119.765625,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Learn",
+        "label": null,
+        "title": null,
+        "width": 83.796875,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Test",
+        "label": null,
+        "title": null,
+        "width": 74.53125,
+        "height": 32
+      },
+      {
+        "tag": "A",
+        "text": "Match",
+        "label": null,
+        "title": null,
+        "width": 88.15625,
+        "height": 32
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Start game",
+        "label": null,
+        "title": null,
+        "width": 141.53125,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  },
+  {
+    "device": "mobile",
+    "name": "create",
+    "text": "Recall\nCreate\nCreate a new study set\nCreate\nImport\n3 cards\n1\nTERM\nDEFINITION\n2\nTERM\nDEFINITION\n3\nTERM\nDEFINITION\nAdd card\nCreate set",
+    "overflow": false,
+    "controls": [
+      {
+        "tag": "A",
+        "text": "Recall",
+        "label": null,
+        "title": null,
+        "width": 110.515625,
+        "height": 44
+      },
+      {
+        "tag": "A",
+        "text": "Library",
+        "label": null,
+        "title": null,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "tag": "A",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 100.953125,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Create",
+        "label": null,
+        "title": null,
+        "width": 84.953125,
+        "height": 44
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "label": "Title",
+        "title": null,
+        "width": 358,
+        "height": 54
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": "Description",
+        "title": null,
+        "width": 358,
+        "height": 74
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Import",
+        "label": null,
+        "title": null,
+        "width": 102.453125,
+        "height": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move up",
+        "title": "Move up",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move down",
+        "title": "Move down",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Delete card",
+        "title": "Delete card",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 324,
+        "height": 42
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 324,
+        "height": 42
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move up",
+        "title": "Move up",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move down",
+        "title": "Move down",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Delete card",
+        "title": "Delete card",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 324,
+        "height": 42
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 324,
+        "height": 42
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move up",
+        "title": "Move up",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Move down",
+        "title": "Move down",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Delete card",
+        "title": "Delete card",
+        "width": 40,
+        "height": 40
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 324,
+        "height": 42
+      },
+      {
+        "tag": "TEXTAREA",
+        "text": "",
+        "label": null,
+        "title": null,
+        "width": 324,
+        "height": 42
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Add card",
+        "label": null,
+        "title": null,
+        "width": 358,
+        "height": 76
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Create set",
+        "label": null,
+        "title": null,
+        "width": 135.6875,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "label": "Open Next.js Dev Tools",
+        "title": null,
+        "width": 32,
+        "height": 32
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "playwright": "^1.65.0",
+    "sharp": "^0.35.5"
+  },
+  "name": "flashcards-ui-review",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "interact": "node interact.mjs",
+    "annotate": "node annotate.mjs"
+  }
+}

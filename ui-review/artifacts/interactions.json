@@ -1,0 +1,63 @@
+[
+  {
+    "name": "search-by-term",
+    "text": "Your library\n✨\nStart a streak\nStudy a little every day\n18 terms to learn\nacross 2 sets\nSort:\nRecently studied\nA–Z\nLeast mastered\nCell Biology\n\n8 terms · Not studied yet\n\nOrganelles and what they do.\n\n0 mastered · 0 learning · 8 new\n\nStart learning 8 terms\nNew set\nPaste a list from a doc or spreadsheet to import it"
+  },
+  {
+    "name": "mobile-search-empty",
+    "text": "Recall\nCreate\nYour library\n✨\nStart a streak\nStudy a little every day\n18 terms to learn\nacross 2 sets\nSort:\nRecently studied\nA–Z\nLeast mastered\n\nNo sets match “no-such-term”."
+  },
+  {
+    "name": "space-flip",
+    "text": "Spanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nTERM\n\nhola\n\nDEFINITION\n\nhello\n\n1 / 10"
+  },
+  {
+    "name": "arrow-next",
+    "text": "Spanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nTERM\n\ngracias\n\nDEFINITION\n\nthank you\n\n2 / 10"
+  },
+  {
+    "name": "mobile-learn-active",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nAnswer with:\nDefinition\nTerm\n0\nmastered\n0\nlearning\n10\nnew\nTERM\nRound 1 · Question 1 of 7\n\nla biblioteca\n\nChoose the matching answer\n\n1\napple\n2\nlibrary\n3\nMy name is…\n4\nplease"
+  },
+  {
+    "name": "learn-buttons",
+    "buttons": [
+      "1apple",
+      "2library",
+      "3My name is…",
+      "4please"
+    ]
+  },
+  {
+    "name": "mobile-learn-feedback",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nAnswer with:\nDefinition\nTerm\n0\nmastered\n0\nlearning\n10\nnew\nTERM\nRound 1 · Question 1 of 8\n\nla biblioteca\n\nNot quite — you'll see this one again.\n\napple\nlibrary\n3\nMy name is…\n4\nplease\nContinue"
+  },
+  {
+    "name": "mobile-match-active",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\n0.2s\nhola\nla manzana\nlibrary\nhello\nwater\nWhere is the bathroom?\nMy name is…\n¿Dónde está el baño?\nMe llamo…\napple\nel agua\nla biblioteca"
+  },
+  {
+    "name": "mobile-test-active",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nTRUE / FALSE\nTERM\n1 OF 10\n\nhola\n\nDEFINITION\nwater\nTrue\nFalse\nTERM\n2 OF 10\n\nla biblioteca\n\nDEFINITION\nhello\nTrue\nFalse\nTERM\n3 OF 10\n\nel agua\n\nDEFINITION\napple\nTrue\nFalse\nTERM\n4 OF 10\n\nMe llamo…\n\nDEFINITION\nMy name is…\nTrue\nFalse\nMULTIPLE CHOICE\nTERM\n5 OF 10\n\n¿Dónde está el baño?\n\nhello\nMy name is…\napple\nWhere is the bathroom?\nTERM\n6 OF 10\n\ngracias\n\napple\nthank you\nplease\nwater\nTERM\n7 OF 10\n\nla manzana\n\napple\nwater\nplease\nhello\nWRITTEN\nTERM\n8 OF 10\n\nmañana\n\nTERM\n9 OF 10\n\nel perro\n\nTERM\n10 OF 10\n\npor favor\n\n0 of 10 answered\n\nSubmit test"
+  },
+  {
+    "name": "mobile-create-validation",
+    "text": "Recall\nCreate\nCreate a new study set\nCreate\nGive your set a title.\nImport\n3 cards\n1\nTERM\nDEFINITION\n2\nTERM\nDEFINITION\n3\nTERM\nDEFINITION\nAdd card\nCreate set"
+  },
+  {
+    "name": "mobile-import",
+    "text": "Recall\nCreate\nCreate a new study set\nCreate\nGive your set a title.\nImport\n3 cards\nImport your data\n\nCopy and paste from Word, Excel, Google Docs, etc.\n\nBetween term and definition\nTab\nComma\nDash\nBetween cards\nNewline\nSemicolon\nCancel\nImport cards\n1\nTERM\nDEFINITION\n2\nTERM\nDEFINITION\n3\nTERM\nDEFINITION\nAdd card\nCreate set"
+  },
+  {
+    "name": "mobile-library-dark",
+    "text": "Recall\nCreate\nYour library\n✨\nStart a streak\nStudy a little every day\n18 terms to learn\nacross 2 sets\nSort:\nRecently studied\nA–Z\nLeast mastered\nCell Biology\n\n8 terms · Not studied yet\n\nOrganelles and what they do.\n\n0 mastered · 0 learning · 8 new\n\nStart learning 8 terms\nSpanish: Everyday Basics\n\n10 terms · Not studied yet\n\nCommon words and phrases for getting around.\n\n0 mastered · 0 learning · 10 new\n\nStart learning 10 terms\nNew set\nPaste a list from a doc or spreadsheet to import it"
+  },
+  {
+    "name": "narrow-flashcards",
+    "text": "Recall\nCreate\nSpanish: Everyday Basics\nFlashcards\nLearn\nTest\nMatch\nTERM\n\nhola\n\nClick or press Space to flip\n\nDEFINITION\n\nhello\n\n1 / 10"
+  },
+  {
+    "name": "320px-overflow",
+    "value": false
+  }
+]
