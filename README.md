@@ -13,7 +13,7 @@ A Quizlet-style flashcard study app built with Next.js 16 (App Router), React 19
 
 Answer checking ignores case, accents, and punctuation, and allows small typos. Learn tells you when an answer was accepted despite a missing accent or a typo, and shows buttons for accented characters.
 
-Data is stored in Postgres (via Drizzle ORM). There are no accounts yet: it's a single-user app, so don't expose it publicly without adding auth.
+Data is stored in Postgres (via Drizzle ORM). Accounts are handled by [Clerk](https://clerk.com): every page except `/sign-in` and `/sign-up` requires signing in (`src/proxy.ts`), and each user only sees their own sets. Sets carry the Clerk user id (`study_sets.user_id`); cards and progress are owned through their set, and `study_days` is keyed by `(user_id, day)`. Every query and Server Action re-checks the signed-in user.
 
 ### Keyboard shortcuts
 
@@ -31,15 +31,15 @@ pnpm install
 cp .env.example .env  # database credentials + DATABASE_URL
 pnpm db:up            # start Postgres 17 (docker compose), waits until healthy
 pnpm db:migrate       # apply migrations in drizzle/
-pnpm db:seed          # optional: add the two sample sets (safe to re-run)
+pnpm db:seed <user_id> # optional: add the two sample sets to a user's library (safe to re-run)
 pnpm dev              # http://localhost:3000
 ```
 
-Other scripts: `pnpm build`, `pnpm lint`, `pnpm db:generate` (create a migration after editing `src/db/schema.ts`), `pnpm db:studio` (browse the data), `pnpm db:down` (stop Postgres; data stays in the `pgdata` volume).
+Other scripts: `pnpm db:claim <user_id>` (give data from before accounts existed, owner `unclaimed`, to a user; Clerk user ids are in the Clerk Dashboard under Users), `pnpm build`, `pnpm lint`, `pnpm db:generate` (create a migration after editing `src/db/schema.ts`), `pnpm db:studio` (browse the data), `pnpm db:down` (stop Postgres; data stays in the `pgdata` volume).
 
 ## Deployment
 
-Hosted on Vercel (project `flashcards`, region `iad1`) with Postgres on Neon (project `flashcards`, `aws-us-east-1`). All deployments are behind Vercel Authentication, since the app has no accounts.
+Hosted on Vercel (project `flashcards`, region `iad1`) with Postgres on Neon (project `flashcards`, `aws-us-east-1`). Deployments are currently also behind Vercel Authentication, from before the app had accounts.
 
 Deploys go through GitHub Actions (`.github/workflows/ci.yml`), not Vercel's Git integration (disabled in `vercel.json`):
 

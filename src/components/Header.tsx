@@ -1,7 +1,8 @@
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { Suspense } from "react";
 import { LibraryNavLink, LibraryNavLinkStatic } from "./LibraryNavLink";
-import { ButtonLink, Icon } from "./ui";
+import { Button, ButtonLink, Icon } from "./ui";
 
 export function Header() {
   return (
@@ -17,14 +18,32 @@ export function Header() {
           Recall
         </Link>
         <nav className="flex items-center gap-2">
-          {/* The active state depends on the URL, so it streams in after the static shell. */}
-          <Suspense fallback={<LibraryNavLinkStatic active={false} />}>
-            <LibraryNavLink />
+          {/* Auth state is request data, so the nav streams in after the static shell. */}
+          <Suspense>
+            <Show when="signed-in">
+              {/* The active state depends on the URL, so it streams in too. */}
+              <Suspense fallback={<LibraryNavLinkStatic active={false} />}>
+                <LibraryNavLink />
+              </Suspense>
+              <ButtonLink href="/create" size="sm">
+                <Icon name="plus" className="size-4" />
+                Create
+              </ButtonLink>
+              <UserButton />
+            </Show>
+            <Show when="signed-out">
+              <SignInButton>
+                <Button variant="ghost" size="sm">
+                  Sign in
+                </Button>
+              </SignInButton>
+              <SignUpButton>
+                <Button variant="secondary" size="sm">
+                  Sign up
+                </Button>
+              </SignUpButton>
+            </Show>
           </Suspense>
-          <ButtonLink href="/create" size="sm">
-            <Icon name="plus" className="size-4" />
-            Create
-          </ButtonLink>
         </nav>
       </div>
     </header>

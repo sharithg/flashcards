@@ -1,20 +1,31 @@
 import "server-only";
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import type { LibraryData } from "@/lib/store-types";
 import type { MasteryLevel, StudySet } from "@/lib/types";
 import { db } from "./index";
 import { cardProgress, cards, studyDays, studySets } from "./schema";
 
 /**
- * Everything the (single-user) app needs, in the shape the client store uses.
+ * Everything one user's library needs, in the shape the client store uses.
  * Four simple queries assembled in memory; fine for a personal library of a few thousand cards.
  */
-export async function getLibraryData(): Promise<LibraryData> {
+export async function getLibraryData(userId: string): Promise<LibraryData> {
   const [setRows, cardRows, progressRows, dayRows] = await Promise.all([
-    db.select().from(studySets),
-    db.select().from(cards).orderBy(asc(cards.setId), asc(cards.position)),
-    db.select().from(cardProgress),
-    db.select().from(studyDays).orderBy(asc(studyDays.day)),
+    db.select().from(studySets).where(eq(studySets.userId, userId)),
+    db
+      .select({ card: cards })
+      .from(cards)
+      .innerJoin(studySets, eq(cards.setId, studySets.id))
+      .where(eq(studySets.userId, userId))
+      .orderBy(asc(cards.setId), asc(cards.position))
+      .then((rows) => rows.map((r) => r.card)),
+    db
+      .select({ cardId: cardProgress.cardId, level: cardProgress.level })
+      .from(cardProgress)
+      .innerJoin(cards, eq(cardProgress.cardId, cards.id))
+      .innerJoin(studySets, eq(cards.setId, studySets.id))
+      .where(eq(studySets.userId, userId)),
+    db.select({ day: studyDays.day }).from(studyDays).where(eq(studyDays.userId, userId)).orderBy(asc(studyDays.day)),
   ]);
 
   const levelByCard = new Map(progressRows.map((p) => [p.cardId, p.level as MasteryLevel]));

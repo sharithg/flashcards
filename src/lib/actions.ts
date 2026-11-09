@@ -4,10 +4,11 @@ import { and, eq, inArray, ne, notInArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
 import { cardProgress, cards, studyDays, studySets } from "@/db/schema";
+import { requireUserId } from "./auth";
 
 /*
- * Mutations for the single-user app. There is no auth yet, so every action is reachable by anyone
- * who can reach the server — add a session check here before exposing this beyond localhost.
+ * Mutations, each scoped to the signed-in Clerk user. Sets are owned directly (study_sets.user_id);
+ * cards and progress are reached only through a set the caller owns.
  *
  * The client store applies each change optimistically and then calls these; they don't trigger a
  * route refresh because the client cache is already up to date.
@@ -37,10 +38,15 @@ const setInput = z.object({
 });
 
 export async function saveSetAction(input: z.input<typeof setInput>) {
+  const userId = await requireUserId();
   const set = setInput.parse(input);
   const ids = set.cards.map((c) => c.id);
 
   await db.transaction(async (tx) => {
+    // Set ids are global primary keys; refuse to overwrite someone else's set.
+    const [existing] = await tx.select({ userId: studySets.userId }).from(studySets).where(eq(studySets.id, set.id));
+    if (existing && existing.userId !== userId) throw new Error(`Set id ${set.id} is taken`);
+
     // Card ids are global primary keys; refuse to move a card out of another set.
     const clash = await tx
       .select({ id: cards.id })
@@ -51,10 +57,11 @@ export async function saveSetAction(input: z.input<typeof setInput>) {
 
     await tx
       .insert(studySets)
-      .values({ id: set.id, title: set.title, description: set.description, createdAt: new Date(set.createdAt) })
+      .values({ id: set.id, userId, title: set.title, description: set.description, createdAt: new Date(set.createdAt) })
       .onConflictDoUpdate({
         target: studySets.id,
         set: { title: set.title, description: set.description, updatedAt: sql`now()` },
+        setWhere: eq(studySets.userId, userId),
       });
 
     // Removed cards (and, via cascade, their progress) go away.
@@ -84,60 +91,86 @@ export async function saveSetAction(input: z.input<typeof setInput>) {
   });
 }
 
+/** Matches the given set only if the caller owns it. */
+function ownSet(userId: string, setId: string) {
+  return and(eq(studySets.id, setId), eq(studySets.userId, userId));
+}
+
+/** Ids of every set the caller owns, as a subquery. */
+function ownSetIds(userId: string) {
+  return db.select({ id: studySets.id }).from(studySets).where(eq(studySets.userId, userId));
+}
+
 export async function deleteSetAction(setId: string) {
-  await db.delete(studySets).where(eq(studySets.id, id.parse(setId)));
+  const userId = await requireUserId();
+  await db.delete(studySets).where(ownSet(userId, id.parse(setId)));
 }
 
 export async function setPinnedAction(setId: string, pinned: boolean) {
+  const userId = await requireUserId();
   await db
     .update(studySets)
     .set({ pinned: z.boolean().parse(pinned) })
-    .where(eq(studySets.id, id.parse(setId)));
+    .where(ownSet(userId, id.parse(setId)));
 }
 
 export async function setStarredAction(cardId: string, starred: boolean) {
+  const userId = await requireUserId();
   await db
     .update(cards)
     .set({ starred: z.boolean().parse(starred) })
-    .where(eq(cards.id, id.parse(cardId)));
+    .where(and(eq(cards.id, id.parse(cardId)), inArray(cards.setId, ownSetIds(userId))));
 }
 
-async function markStudied(tx: Pick<typeof db, "update" | "insert">, setId: string, today: string) {
-  await tx.update(studySets).set({ lastStudiedAt: sql`now()` }).where(eq(studySets.id, setId));
-  await tx.insert(studyDays).values({ day: today }).onConflictDoNothing();
+async function markStudied(tx: Pick<typeof db, "update" | "insert">, userId: string, setId: string, today: string) {
+  const touched = await tx
+    .update(studySets)
+    .set({ lastStudiedAt: sql`now()` })
+    .where(ownSet(userId, setId))
+    .returning({ id: studySets.id });
+  if (!touched.length) throw new Error("Set not found");
+  await tx.insert(studyDays).values({ userId, day: today }).onConflictDoNothing();
 }
 
 export async function recordStudyAction(setId: string, today: string) {
+  const userId = await requireUserId();
   const s = id.parse(setId);
   const d = day.parse(today);
-  await db.transaction((tx) => markStudied(tx, s, d));
+  await db.transaction((tx) => markStudied(tx, userId, s, d));
 }
 
 export async function setMasteryAction(input: { setId: string; cardId: string; level: 0 | 1 | 2; today: string }) {
+  const userId = await requireUserId();
   const p = z.object({ setId: id, cardId: id, level, today: day }).parse(input);
   await db.transaction(async (tx) => {
-    // Only touch cards that really belong to the given set.
+    // Only touch cards that really belong to the given set, and only if the caller owns that set.
     const owned = await tx
       .select({ id: cards.id })
       .from(cards)
-      .where(and(eq(cards.id, p.cardId), eq(cards.setId, p.setId)));
+      .innerJoin(studySets, eq(cards.setId, studySets.id))
+      .where(and(eq(cards.id, p.cardId), ownSet(userId, p.setId)));
     if (!owned.length) throw new Error("Card not found in set");
     await tx
       .insert(cardProgress)
       .values({ cardId: p.cardId, level: p.level })
       .onConflictDoUpdate({ target: cardProgress.cardId, set: { level: p.level } });
-    await markStudied(tx, p.setId, p.today);
+    await markStudied(tx, userId, p.setId, p.today);
   });
 }
 
 export async function resetProgressAction(setId: string) {
+  const userId = await requireUserId();
   const s = id.parse(setId);
-  await db
-    .delete(cardProgress)
-    .where(inArray(cardProgress.cardId, db.select({ id: cards.id }).from(cards).where(eq(cards.setId, s))));
+  const ownedCards = db
+    .select({ id: cards.id })
+    .from(cards)
+    .innerJoin(studySets, eq(cards.setId, studySets.id))
+    .where(ownSet(userId, s));
+  await db.delete(cardProgress).where(inArray(cardProgress.cardId, ownedCards));
 }
 
 export async function recordMatchTimeAction(setId: string, ms: number, today: string) {
+  const userId = await requireUserId();
   const s = id.parse(setId);
   const t = z.number().int().positive().max(24 * 60 * 60 * 1000).parse(ms);
   const d = day.parse(today);
@@ -145,7 +178,7 @@ export async function recordMatchTimeAction(setId: string, ms: number, today: st
     await tx
       .update(studySets)
       .set({ bestMatchTimeMs: sql`least(coalesce(${studySets.bestMatchTimeMs}, ${t}), ${t})` })
-      .where(eq(studySets.id, s));
-    await markStudied(tx, s, d);
+      .where(ownSet(userId, s));
+    await markStudied(tx, userId, s, d);
   });
 }
