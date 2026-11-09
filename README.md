@@ -39,10 +39,14 @@ Other scripts: `npm run build`, `npm run lint`, `npm run db:generate` (create a 
 
 ## Deployment
 
-Hosted on Vercel (project `flashcards`, region `iad1`) with Postgres on Neon (project `flashcards`, `aws-us-east-1`). Every push to `main` deploys to production. All deployments are behind Vercel Authentication, since the app has no accounts.
+Hosted on Vercel (project `flashcards`, region `iad1`) with Postgres on Neon (project `flashcards`, `aws-us-east-1`). All deployments are behind Vercel Authentication, since the app has no accounts.
 
-- `DATABASE_URL` (Neon pooled) and `DATABASE_URL_UNPOOLED` (direct) are set in the Vercel project for all environments. `vercel env pull` copies them locally.
-- Migrations don't run on deploy. After adding one, apply it to Neon with `DATABASE_URL_UNPOOLED="<neon direct url>" npm run db:migrate` (get the URL with `npx neonctl connection-string --project-id long-smoke-75420550`).
+Deploys go through GitHub Actions (`.github/workflows/ci.yml`), not Vercel's Git integration (disabled in `vercel.json`):
+
+- Every PR and push: lint and typecheck.
+- Push to `main`: `vercel pull` → `vercel build --prod` → `npm run db:migrate` against Neon → `vercel deploy --prebuilt --prod`. Deploys are queued, never concurrent.
+- Migrations run before the new code is live, so keep them backward-compatible with the deployed code (e.g. add a column now, drop the old one in a later deploy).
+- `DATABASE_URL` (Neon pooled) and `DATABASE_URL_UNPOOLED` (direct) live in the Vercel project for all environments; `vercel env pull` copies them locally. The only GitHub secret is `VERCEL_TOKEN`.
 
 ## How data flows
 
