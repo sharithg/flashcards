@@ -37,6 +37,13 @@ npm run dev              # http://localhost:3000
 
 Other scripts: `npm run build`, `npm run lint`, `npm run db:generate` (create a migration after editing `src/db/schema.ts`), `npm run db:studio` (browse the data), `npm run db:down` (stop Postgres; data stays in the `pgdata` volume).
 
+## Deployment
+
+Hosted on Vercel (project `flashcards`, region `iad1`) with Postgres on Neon (project `flashcards`, `aws-us-east-1`). Every push to `main` deploys to production. All deployments are behind Vercel Authentication, since the app has no accounts.
+
+- `DATABASE_URL` (Neon pooled) and `DATABASE_URL_UNPOOLED` (direct) are set in the Vercel project for all environments. `vercel env pull` copies them locally.
+- Migrations don't run on deploy. After adding one, apply it to Neon with `DATABASE_URL_UNPOOLED="<neon direct url>" npm run db:migrate` (get the URL with `npx neonctl connection-string --project-id long-smoke-75420550`).
+
 ## How data flows
 
 - The root layout renders `DataProvider` (a Server Component, per request) which loads everything from Postgres and passes it to the client store, so pages render with data on the first paint.
