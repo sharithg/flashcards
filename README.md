@@ -24,18 +24,18 @@ Data is stored in Postgres (via Drizzle ORM). There are no accounts yet: it's a 
 
 ## Setup
 
-Requires Node 22+ and Docker.
+Requires Node 22+, pnpm 10 and Docker.
 
 ```bash
-npm install
-cp .env.example .env     # database credentials + DATABASE_URL
-npm run db:up            # start Postgres 17 (docker compose), waits until healthy
-npm run db:migrate       # apply migrations in drizzle/
-npm run db:seed          # optional: add the two sample sets (safe to re-run)
-npm run dev              # http://localhost:3000
+pnpm install
+cp .env.example .env  # database credentials + DATABASE_URL
+pnpm db:up            # start Postgres 17 (docker compose), waits until healthy
+pnpm db:migrate       # apply migrations in drizzle/
+pnpm db:seed          # optional: add the two sample sets (safe to re-run)
+pnpm dev              # http://localhost:3000
 ```
 
-Other scripts: `npm run build`, `npm run lint`, `npm run db:generate` (create a migration after editing `src/db/schema.ts`), `npm run db:studio` (browse the data), `npm run db:down` (stop Postgres; data stays in the `pgdata` volume).
+Other scripts: `pnpm build`, `pnpm lint`, `pnpm db:generate` (create a migration after editing `src/db/schema.ts`), `pnpm db:studio` (browse the data), `pnpm db:down` (stop Postgres; data stays in the `pgdata` volume).
 
 ## Deployment
 
@@ -44,7 +44,7 @@ Hosted on Vercel (project `flashcards`, region `iad1`) with Postgres on Neon (pr
 Deploys go through GitHub Actions (`.github/workflows/ci.yml`), not Vercel's Git integration (disabled in `vercel.json`):
 
 - Every PR and push: lint and typecheck.
-- Push to `main`: `vercel pull` → `vercel build --prod` → `npm run db:migrate` against Neon → `vercel deploy --prebuilt --prod`. Deploys are queued, never concurrent.
+- Push to `main`: `vercel pull` → `vercel build --prod` → `pnpm db:migrate` against Neon → `vercel deploy --prebuilt --prod`. Deploys are queued, never concurrent.
 - Migrations run before the new code is live, so keep them backward-compatible with the deployed code (e.g. add a column now, drop the old one in a later deploy).
 - `DATABASE_URL` (Neon pooled) and `DATABASE_URL_UNPOOLED` (direct) live in the Vercel project for all environments; `vercel env pull` copies them locally. The only GitHub secret is `VERCEL_TOKEN`.
 

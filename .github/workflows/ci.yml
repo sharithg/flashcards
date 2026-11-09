@@ -16,13 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4 # version from package.json "packageManager"
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
 
   deploy:
     needs: ci
@@ -33,20 +34,22 @@ jobs:
     concurrency:
       group: deploy-production
       cancel-in-progress: false
+    env:
+      VERCEL: pnpm dlx vercel@latest
     steps:
       - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm install --global vercel@latest
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
 
       - name: Pull Vercel production settings and env vars
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: $VERCEL pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: $VERCEL build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       # Runs after a successful build and before the new code goes live, so
       # migrations must stay compatible with the currently deployed code.
@@ -55,7 +58,7 @@ jobs:
           set -a
           source .vercel/.env.production.local
           set +a
-          npm run db:migrate
+          pnpm db:migrate
 
       - name: Deploy
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: $VERCEL deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
