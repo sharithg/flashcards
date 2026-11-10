@@ -1,21 +1,12 @@
+import "./globals.css"; // first: declares the cascade-layer order Astryx relies on
+
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { DataProvider } from "@/components/DataProvider";
 import { Header } from "@/components/Header";
 import { Spinner } from "@/components/ui";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: { default: "Recall", template: "%s · Recall" },
@@ -24,15 +15,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col font-sans">
+    <html lang="en" className="h-full antialiased">
+      <body className="flex min-h-full flex-col">
         <ClerkProvider>
-          <Header />
-          <main className="flex-1">
-            <Suspense fallback={<Spinner />}>
-              <DataProvider>{children}</DataProvider>
-            </Suspense>
-          </main>
+          <Providers>
+            <Header />
+            <main className="flex-1">
+              <Suspense fallback={<Spinner />}>
+                <DataProvider>{children}</DataProvider>
+              </Suspense>
+            </main>
+          </Providers>
         </ClerkProvider>
       </body>
     </html>

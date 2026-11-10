@@ -5,7 +5,14 @@ import { useEffect, useState } from "react";
 import { saveSet } from "@/lib/store";
 import type { Card, StudySet } from "@/lib/types";
 import { uid } from "@/lib/utils";
-import { Button, Icon, IconButton } from "./ui";
+import { Banner } from "@astryxdesign/core/Banner";
+import { Button } from "@astryxdesign/core/Button";
+import { Card as Panel } from "@astryxdesign/core/Card";
+import { IconButton } from "@astryxdesign/core/IconButton";
+import { SegmentedControl, SegmentedControlItem } from "@astryxdesign/core/SegmentedControl";
+import { TextArea } from "@astryxdesign/core/TextArea";
+import { TextInput } from "@astryxdesign/core/TextInput";
+import { Icon } from "./ui";
 
 const blank = (id: string = uid()): Card => ({ id, term: "", definition: "" });
 
@@ -105,7 +112,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
   }
 
   const inputCls =
-    "w-full border-0 border-b-2 border-line bg-transparent px-0 py-2 text-base outline-none field-sizing-content resize-none focus:border-accent";
+    "w-full border-0 border-b-2 border-border bg-transparent px-0 py-2 text-base outline-none field-sizing-content resize-none focus:border-accent";
 
   return (
     <form
@@ -121,100 +128,116 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
         }
       }}
     >
-      <div className="sticky top-16 z-10 -mx-4 flex items-center justify-between gap-4 bg-bg/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
-        <h1 className="text-2xl font-bold">{initial ? "Edit set" : "Create a new study set"}</h1>
+      <div className="sticky top-16 z-10 -mx-4 flex items-center justify-between gap-4 bg-body/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
+        <h1 className="font-heading text-2xl font-bold">{initial ? "Edit set" : "Create a new study set"}</h1>
         <div className="flex gap-2">
-          {initial && (
-            <Button variant="secondary" onClick={() => router.push(`/sets/${initial.id}`)}>
-              Cancel
-            </Button>
-          )}
-          <Button type="submit">{initial ? "Save" : "Create"}</Button>
+          {initial && <Button variant="secondary" label="Cancel" onClick={() => router.push(`/sets/${initial.id}`)} />}
+          <Button type="submit" variant="primary" label={initial ? "Save" : "Create"} />
         </div>
       </div>
 
       {error && (
-        <div role="alert" className="mb-4 rounded-xl bg-bad-soft px-4 py-3 text-sm font-semibold text-bad">
-          {error}
+        <div role="alert" className="mb-4">
+          <Banner status="error" title={error} />
         </div>
       )}
 
       <div className="space-y-3">
-        <input
+        <TextInput
+          label="Title"
+          size="lg"
+          width="100%"
           value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
+          onChange={(v) => {
+            setTitle(v);
             setError("");
           }}
           placeholder='Enter a title, like "Biology – Chapter 22"'
-          aria-label="Title"
-          autoFocus={!initial && !startWithImport}
-          className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-lg font-semibold outline-none focus:border-accent"
+          hasAutoFocus={!initial && !startWithImport}
         />
-        <textarea
+        <TextArea
+          label="Description"
+          isOptional
+          width="100%"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={setDescription}
           placeholder="Add a description…"
-          aria-label="Description"
           rows={2}
-          className="w-full resize-none rounded-xl border border-line bg-surface px-4 py-3 outline-none focus:border-accent"
         />
       </div>
 
       <div className="mt-6 flex items-center justify-between">
-        <Button variant="secondary" size="sm" onClick={() => setImportOpen((o) => !o)}>
-          <Icon name="plus" className="size-4" /> Import
-        </Button>
-        <span className="text-sm text-muted">{cards.length} cards</span>
+        <Button
+          variant="secondary"
+          size="sm"
+          label="Import"
+          aria-expanded={importOpen}
+          icon={<Icon name="plus" className="size-4" />}
+          onClick={() => setImportOpen((o) => !o)}
+        />
+        <span className="text-sm text-secondary">{cards.length} cards</span>
       </div>
 
       {importOpen && (
-        <div className="mt-4 rounded-lg border border-line bg-surface p-5">
-          <div className="text-sm font-semibold">Import your data</div>
-          <p className="text-sm text-muted">Copy and paste from Word, Excel, Google Docs, etc.</p>
-          <textarea
+        <Panel padding={5} className="mt-4 border border-border">
+          <TextArea
+            label="Import your data"
+            description="Copy and paste from Word, Excel, Google Docs, etc."
+            width="100%"
             value={importText}
-            onChange={(e) => setImportText(e.target.value)}
+            onChange={setImportText}
             rows={6}
-            autoFocus
+            hasAutoFocus
             placeholder={`Word 1${TERM_SEPS[termSep]}Definition 1${CARD_SEPS[cardSep]}Word 2${TERM_SEPS[termSep]}Definition 2`}
-            className="mt-3 w-full rounded-xl border border-line bg-bg p-3 font-mono text-sm outline-none focus:border-accent"
           />
-          <div className="mt-3 flex flex-wrap items-end gap-6 text-sm">
-            <Radio label="Between term and definition" value={termSep} options={["tab", "comma", "dash"]} onChange={setTermSep} />
-            <Radio label="Between cards" value={cardSep} options={["newline", "semicolon"]} onChange={setCardSep} />
+          <div className="mt-4 flex flex-wrap items-end gap-6 text-sm">
+            <Separator label="Between term and definition" value={termSep} options={["tab", "comma", "dash"]} onChange={setTermSep} />
+            <Separator label="Between cards" value={cardSep} options={["newline", "semicolon"]} onChange={setCardSep} />
             <div className="ml-auto flex gap-2">
-              <Button variant="ghost" size="sm" onClick={() => setImportOpen(false)}>
-                Cancel
-              </Button>
-              <Button size="sm" disabled={!imported.length} onClick={doImport}>
-                Import {imported.length || ""} cards
-              </Button>
+              <Button variant="ghost" size="sm" label="Cancel" onClick={() => setImportOpen(false)} />
+              <Button
+                variant="primary"
+                size="sm"
+                label={imported.length ? `Import ${imported.length} cards` : "Import cards"}
+                isDisabled={!imported.length}
+                onClick={doImport}
+              />
             </div>
           </div>
-        </div>
+        </Panel>
       )}
 
       <ol className="mt-4 space-y-4">
         {cards.map((card, i) => (
-          <li key={card.id} id={`card-${card.id}`} className="scroll-mt-36 rounded-lg border border-line bg-surface focus-within:border-accent">
-            <div className="flex items-center justify-between border-b border-line px-4 py-1.5">
-              <span className="text-sm font-bold text-muted">{i + 1}</span>
+          <li key={card.id} id={`card-${card.id}`} className="scroll-mt-36 rounded-lg border border-border bg-card focus-within:border-accent">
+            <div className="flex items-center justify-between border-b border-border px-4 py-1.5">
+              <span className="text-sm font-bold text-secondary">{i + 1}</span>
               <div className="flex">
-                <IconButton label="Move up" onClick={() => move(i, -1)} disabled={i === 0}>
-                  <Icon name="up" className="size-4" />
-                </IconButton>
-                <IconButton label="Move down" onClick={() => move(i, 1)} disabled={i === cards.length - 1}>
-                  <Icon name="down" className="size-4" />
-                </IconButton>
                 <IconButton
+                  variant="ghost"
+                  size="sm"
+                  label="Move up"
+                  icon={<Icon name="up" className="size-4" />}
+                  onClick={() => move(i, -1)}
+                  isDisabled={i === 0}
+                />
+                <IconButton
+                  variant="ghost"
+                  size="sm"
+                  label="Move down"
+                  icon={<Icon name="down" className="size-4" />}
+                  onClick={() => move(i, 1)}
+                  isDisabled={i === cards.length - 1}
+                />
+                <IconButton
+                  variant="ghost"
+                  size="sm"
                   label="Delete card"
+                  icon={<Icon name="trash" className="size-4" />}
                   onClick={() => setCards((cs) => cs.filter((c) => c.id !== card.id))}
-                  disabled={cards.length <= 1}
-                  className="hover:text-bad"
-                >
-                  <Icon name="trash" className="size-4" />
-                </IconButton>
+                  isDisabled={cards.length <= 1}
+                  className="hover:text-error"
+                />
               </div>
             </div>
             <div className="grid gap-4 p-4 sm:grid-cols-2 sm:gap-8">
@@ -229,7 +252,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
                   rows={1}
                   className={inputCls}
                 />
-                <span className="mt-1 block text-xs font-semibold uppercase tracking-wider text-muted">Term</span>
+                <span className="mt-1 block text-xs font-semibold uppercase tracking-wider text-secondary">Term</span>
               </label>
               <label className="block">
                 <textarea
@@ -248,7 +271,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
                   rows={1}
                   className={inputCls}
                 />
-                <span className="mt-1 block text-xs font-semibold uppercase tracking-wider text-muted">Definition</span>
+                <span className="mt-1 block text-xs font-semibold uppercase tracking-wider text-secondary">Definition</span>
               </label>
             </div>
           </li>
@@ -258,21 +281,21 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
       <button
         type="button"
         onClick={addCard}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-line py-6 font-bold text-muted transition-colors hover:border-accent hover:text-accent"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border-strong py-6 font-bold text-secondary transition-colors hover:border-accent hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         <Icon name="plus" /> Add card
       </button>
 
       <div className="mt-8 flex justify-end">
-        <Button type="submit" size="lg">
-          {initial ? "Save changes" : "Create set"}
-        </Button>
+        <Button type="submit" variant="primary" size="lg" label={initial ? "Save changes" : "Create set"} />
       </div>
     </form>
   );
 }
 
-function Radio<T extends string>({
+const SEP_LABELS: Record<string, string> = { tab: "Tab", comma: "Comma", dash: "Dash", newline: "New line", semicolon: "Semicolon" };
+
+function Separator<T extends string>({
   label,
   value,
   options,
@@ -284,16 +307,15 @@ function Radio<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <fieldset>
-      <legend className="mb-1 font-semibold">{label}</legend>
-      <div className="flex gap-4">
-        {options.map((o) => (
-          <label key={o} className="flex cursor-pointer items-center gap-1.5 capitalize">
-            <input type="radio" checked={value === o} onChange={() => onChange(o)} className="accent-accent" />
-            {o}
-          </label>
-        ))}
+    <div>
+      <div className="mb-1.5 font-semibold" aria-hidden="true">
+        {label}
       </div>
-    </fieldset>
+      <SegmentedControl label={label} size="sm" value={value} onChange={(v) => onChange(v as T)}>
+        {options.map((o) => (
+          <SegmentedControlItem key={o} value={o} label={SEP_LABELS[o] ?? o} />
+        ))}
+      </SegmentedControl>
+    </div>
   );
 }

@@ -1,12 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { recordStudy, toggleStar } from "@/lib/store";
 import type { Card, StudySet } from "@/lib/types";
 import { pluralize, shuffle } from "@/lib/utils";
-import { Button, Icon, IconButton, Kbd } from "./ui";
+import { Button } from "@astryxdesign/core/Button";
+import { Card as Panel } from "@astryxdesign/core/Card";
+import { IconButton } from "@astryxdesign/core/IconButton";
+import { Kbd } from "@astryxdesign/core/Kbd";
+import { SegmentedControl, SegmentedControlItem } from "@astryxdesign/core/SegmentedControl";
+import { Switch } from "@astryxdesign/core/Switch";
+import { Icon } from "./ui";
 
 type Side = "term" | "definition";
 type DeckCard = Card & { setId: string };
@@ -23,32 +28,34 @@ function Face({ card, side, label, back, hint }: { card: DeckCard; side: Side; l
   const text = side === "term" ? card.term : card.definition;
   return (
     <div
-      className={`flip-face ${back ? "flip-back" : ""} flex flex-col rounded-xl border border-line bg-surface p-5 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.25)]`}
+      className={`flip-face ${back ? "flip-back" : ""} flex flex-col rounded-lg border border-border bg-card p-5 shadow-md`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted">{label}</span>
+        <span className="text-xs font-semibold uppercase tracking-wider text-secondary">{label}</span>
         <IconButton
+          variant="ghost"
           label={card.starred ? "Unstar" : "Star"}
+          aria-pressed={!!card.starred}
           onClick={(e) => {
             e.stopPropagation();
             toggleStar(card.setId, card.id);
           }}
-          className={`-mr-2 -mt-2 ${card.starred ? "text-warn hover:text-warn" : ""}`}
-        >
-          <Icon name="star" filled={card.starred} />
-        </IconButton>
+          icon={<Icon name="star" filled={card.starred} />}
+          className={`-mr-2 -mt-2 ${card.starred ? "text-warning" : ""}`}
+        />
       </div>
       <div className="flex flex-1 items-center justify-center overflow-y-auto px-2 py-2 text-center">
         <p className={`${textSize(text)} font-medium leading-snug whitespace-pre-wrap break-words`}>{text}</p>
       </div>
-      {hint && <p className="text-center text-xs text-muted/70">Click or press Space to flip</p>}
+      {hint && <p className="text-center text-xs text-secondary/70">Click or press Space to flip</p>}
     </div>
   );
 }
 
+// Key names follow Astryx Kbd's `keys` syntax.
 const SHORTCUTS: [string[], string][] = [
   [["Space"], "Flip card"],
-  [["←", "→"], "Previous / next (Still learning / Know when tracking)"],
+  [["left", "right"], "Previous / next (Still learning / Know when tracking)"],
   [["S"], "Shuffle on / off"],
   [["F"], "Fullscreen"],
   [["?"], "Show / hide shortcuts"],
@@ -166,53 +173,49 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
   if (done) {
     const total = known.length + learning.length;
     return (
-      <div className="rounded-xl border border-line bg-surface p-8 text-center sm:p-12">
-        <p className="text-sm font-semibold uppercase tracking-wider text-accent">Round complete</p>
-        <h2 className="mt-2 text-3xl font-bold">
+      <Panel padding={10} className="text-center">
+        <p className="text-sm font-semibold uppercase tracking-wider text-secondary">Round complete</p>
+        <h2 className="mt-2 font-heading text-3xl font-bold">
           {tracking ? (learning.length === 0 ? "You know every card!" : "Nice progress.") : "You reviewed every card."}
         </h2>
         {tracking && total > 0 && (
           <div className="mx-auto mt-8 grid max-w-sm grid-cols-2 gap-3">
-            <div className="rounded-lg bg-good-soft p-4">
-              <div className="text-3xl font-bold text-good">{known.length}</div>
-              <div className="text-sm font-medium text-muted">Know</div>
+            <div className="rounded-lg bg-success-muted p-4">
+              <div className="text-3xl font-bold text-success">{known.length}</div>
+              <div className="text-sm font-medium text-secondary">Know</div>
             </div>
-            <div className="rounded-lg bg-warn-soft p-4">
-              <div className="text-3xl font-bold text-warn">{learning.length}</div>
-              <div className="text-sm font-medium text-muted">Still learning</div>
+            <div className="rounded-lg bg-warning-muted p-4">
+              <div className="text-3xl font-bold text-warning">{learning.length}</div>
+              <div className="text-sm font-medium text-secondary">Still learning</div>
             </div>
           </div>
         )}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {tracking && learning.length > 0 && (
-            <Button onClick={() => restart({ ids: learning })}>Keep reviewing {pluralize(learning.length, "term")}</Button>
+            <Button variant="primary" label={`Keep reviewing ${pluralize(learning.length, "term")}`} onClick={() => restart({ ids: learning })} />
           )}
-          <Button variant="secondary" onClick={() => restart()}>
-            <Icon name="rotate" className="size-4" /> Restart flashcards
-          </Button>
-          <Link href={`/sets/${set.id}/learn`} className="inline-flex h-11 items-center px-5 text-sm font-semibold text-accent hover:underline">
-            Try Learn mode →
-          </Link>
+          <Button variant="secondary" label="Restart flashcards" icon={<Icon name="rotate" className="size-4" />} onClick={() => restart()} />
+          <Button href={`/sets/${set.id}/learn`} variant="ghost" label="Try Learn mode →" />
         </div>
-      </div>
+      </Panel>
     );
   }
 
   if (!card) {
     return (
-      <div className="rounded-xl border border-dashed border-line p-12 text-center text-muted">
+      <div className="rounded-lg border border-dashed border-border-strong p-12 text-center text-secondary">
         {starredOnly ? (
           <>
             No starred cards.{" "}
-            <button
-              className="font-semibold text-accent hover:underline"
+            <Button
+              variant="ghost"
+              size="sm"
+              label="Study all cards"
               onClick={() => {
                 setStarredOnly(false);
                 restart({ starredOnly: false });
               }}
-            >
-              Study all cards
-            </button>
+            />
           </>
         ) : (
           "This set has no cards yet."
@@ -223,24 +226,20 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
 
   const back: Side = front === "term" ? "definition" : "term";
   const label = (s: Side) => (s === "term" ? "Term" : "Definition");
-  const navBtn =
-    "grid size-11 place-items-center rounded-lg border border-line bg-surface transition-colors hover:bg-surface-2 disabled:opacity-40";
-  const toolBtn = (active: boolean) =>
-    `inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold transition-colors ${
-      active ? "bg-accent-soft text-accent" : "text-muted hover:bg-surface-2 hover:text-ink"
-    }`;
+  // Toolbar labels collapse to icons on phones; `label` stays the accessible name.
+  const short = (text: string) => <span className="hidden sm:inline">{text}</span>;
 
   return (
     <div ref={wrapRef} className="fs-wrap">
       {tracking && (
         <div className="mb-4 flex items-center justify-between text-sm font-semibold">
-          <span className="flex items-center gap-2 text-warn">
-            <span className="grid min-w-8 place-items-center rounded-md border border-warn px-2 py-0.5">{learning.length}</span>
+          <span className="flex items-center gap-2 text-warning">
+            <span className="grid min-w-8 place-items-center rounded-md border border-warning px-2 py-0.5">{learning.length}</span>
             Still learning
           </span>
-          <span className="flex items-center gap-2 text-good">
+          <span className="flex items-center gap-2 text-success">
             Know
-            <span className="grid min-w-8 place-items-center rounded-md border border-good px-2 py-0.5">{known.length}</span>
+            <span className="grid min-w-8 place-items-center rounded-md border border-success px-2 py-0.5">{known.length}</span>
           </span>
         </div>
       )}
@@ -266,81 +265,104 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
       <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
         <div className="flex items-center gap-1">
           {!compact && (
-            <button
-              onClick={() => setShowSettings((s) => !s)}
+            <Button
+              size="sm"
+              variant={showSettings ? "secondary" : "ghost"}
+              label="Study options"
               aria-expanded={showSettings}
-              className={toolBtn(showSettings)}
-              title="Study options"
+              icon={<Icon name="settings" className="size-4" />}
+              onClick={() => setShowSettings((s) => !s)}
             >
-              <Icon name="settings" className="size-4" />
-              <span className="hidden sm:inline">Options</span>
-            </button>
+              {short("Options")}
+            </Button>
           )}
-          <button onClick={toggleShuffle} aria-pressed={shuffled} className={toolBtn(shuffled)} title="Shuffle (S)">
-            <Icon name="shuffle" className="size-4" />
-            <span className="hidden sm:inline">{shuffled ? "Shuffled" : "Shuffle"}</span>
-          </button>
+          <Button
+            size="sm"
+            variant={shuffled ? "secondary" : "ghost"}
+            label={shuffled ? "Shuffled" : "Shuffle"}
+            tooltip="Shuffle (S)"
+            aria-pressed={shuffled}
+            icon={<Icon name="shuffle" className="size-4" />}
+            onClick={toggleShuffle}
+          >
+            {short(shuffled ? "Shuffled" : "Shuffle")}
+          </Button>
         </div>
 
         {tracking ? (
           <div className="flex items-center gap-3">
-            <button
+            <IconButton
+              size="lg"
+              label="Still learning"
+              tooltip="Still learning (←)"
+              icon={<Icon name="x" className="size-5" />}
               onClick={() => mark(false)}
-              aria-label="Still learning"
-              title="Still learning (←)"
-              className="grid size-11 place-items-center rounded-lg border-2 border-warn text-warn transition-colors hover:bg-warn-soft"
-            >
-              <Icon name="x" className="size-5" />
-            </button>
+              className="border-2 border-warning text-warning"
+            />
             <span className="min-w-14 text-center text-sm font-semibold tabular-nums">
               {safeIndex + 1} / {deck.length}
             </span>
-            <button
+            <IconButton
+              size="lg"
+              label="Know"
+              tooltip="Know (→)"
+              icon={<Icon name="check" className="size-5" />}
               onClick={() => mark(true)}
-              aria-label="Know"
-              title="Know (→)"
-              className="grid size-11 place-items-center rounded-lg border-2 border-good text-good transition-colors hover:bg-good-soft"
-            >
-              <Icon name="check" className="size-5" />
-            </button>
+              className="border-2 border-success text-success"
+            />
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <button onClick={prev} disabled={safeIndex === 0} aria-label="Previous card" title="Previous (←)" className={navBtn}>
-              <Icon name="left" />
-            </button>
+            <IconButton
+              size="lg"
+              label="Previous card"
+              tooltip="Previous (←)"
+              icon={<Icon name="left" />}
+              onClick={prev}
+              isDisabled={safeIndex === 0}
+            />
             <span className="min-w-14 text-center text-sm font-semibold tabular-nums">
               {safeIndex + 1} / {deck.length}
             </span>
-            <button
+            <IconButton
+              size="lg"
+              label="Next card"
+              tooltip="Next (→)"
+              icon={<Icon name="right" />}
               onClick={next}
-              disabled={compact && safeIndex === deck.length - 1}
-              aria-label="Next card"
-              title="Next (→)"
-              className={navBtn}
-            >
-              <Icon name="right" />
-            </button>
+              isDisabled={compact && safeIndex === deck.length - 1}
+            />
           </div>
         )}
 
         <div className="relative flex justify-end gap-1">
-          <IconButton label="Keyboard shortcuts (?)" onClick={() => setShowKeys((s) => !s)} className={showKeys ? "bg-surface-2 text-ink" : ""}>
-            <Icon name="help" />
-          </IconButton>
-          <button onClick={toggleFullscreen} className={toolBtn(false)} title="Fullscreen (F)">
-            <Icon name="expand" className="size-4" />
-            <span className="hidden sm:inline">{compact ? "Expand" : "Fullscreen"}</span>
-          </button>
+          <IconButton
+            size="sm"
+            variant={showKeys ? "secondary" : "ghost"}
+            label="Keyboard shortcuts (?)"
+            aria-expanded={showKeys}
+            icon={<Icon name="help" className="size-4" />}
+            onClick={() => setShowKeys((s) => !s)}
+          />
+          <Button
+            size="sm"
+            variant="ghost"
+            label={compact ? "Expand" : "Fullscreen"}
+            tooltip="Fullscreen (F)"
+            icon={<Icon name="expand" className="size-4" />}
+            onClick={toggleFullscreen}
+          >
+            {short(compact ? "Expand" : "Fullscreen")}
+          </Button>
           {showKeys && (
-            <div className="absolute bottom-12 right-0 z-30 w-72 rounded-lg border border-line bg-surface p-4 text-left shadow-lg">
+            <div className="absolute bottom-12 right-0 z-30 w-72 rounded-lg border border-border bg-popover p-4 text-left shadow-lg">
               <div className="mb-2 text-sm font-semibold">Keyboard shortcuts</div>
-              <ul className="space-y-1.5 text-sm text-muted">
+              <ul className="space-y-1.5 text-sm text-secondary">
                 {SHORTCUTS.map(([keys, desc]) => (
                   <li key={desc} className="flex items-center gap-3">
                     <span className="flex w-14 shrink-0 gap-1">
                       {keys.map((k) => (
-                        <Kbd key={k}>{k}</Kbd>
+                        <Kbd key={k} keys={k} />
                       ))}
                     </span>
                     {desc}
@@ -353,84 +375,52 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
       </div>
 
       {!compact && (
-        <div className="mx-auto mt-4 h-0.5 max-w-xs overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
-          <div className="h-full bg-muted/40 transition-all" style={{ width: `${((safeIndex + 1) / deck.length) * 100}%` }} />
+        <div className="mx-auto mt-4 h-0.5 max-w-xs overflow-hidden rounded-full bg-track" aria-hidden="true">
+          <div className="h-full bg-secondary/40 transition-all" style={{ width: `${((safeIndex + 1) / deck.length) * 100}%` }} />
         </div>
       )}
 
       {!compact && showSettings && (
-        <div className="mt-6 grid gap-4 rounded-xl border border-line bg-surface p-5 sm:grid-cols-3">
-          <Toggle
+        <Panel padding={5} className="mt-6 grid gap-4 sm:grid-cols-3">
+          <Switch
             label="Track progress"
-            hint="Sort cards into Know / Still learning"
-            checked={tracking}
+            description="Sort cards into Know / Still learning"
+            value={tracking}
             onChange={(v) => {
               setTracking(v);
               restart();
             }}
           />
-          <Toggle
+          <Switch
             label={`Starred only (${starredCount})`}
-            hint="Study just the cards you starred"
-            checked={starredOnly}
-            disabled={starredCount === 0 && !starredOnly}
+            description="Study just the cards you starred"
+            value={starredOnly}
+            isDisabled={starredCount === 0 && !starredOnly}
+            disabledMessage="Star some cards first"
             onChange={(v) => {
               setStarredOnly(v);
               restart({ starredOnly: v });
             }}
           />
           <div>
-            <div className="text-sm font-semibold">Front of card</div>
-            <div className="mt-2 inline-flex rounded-lg bg-surface-2 p-1 text-sm font-semibold">
-              {(["term", "definition"] as const).map((s) => (
-                <button
-                  key={s}
-                  aria-pressed={front === s}
-                  onClick={() => {
-                    setFront(s);
-                    setFlipped(false);
-                  }}
-                  className={`rounded-md px-3 py-1 capitalize ${front === s ? "bg-surface shadow-sm" : "text-muted"}`}
-                >
-                  {s}
-                </button>
-              ))}
+            <div className="mb-2 text-sm font-semibold" aria-hidden="true">
+              Front of card
             </div>
+            <SegmentedControl
+              label="Front of card"
+              size="sm"
+              value={front}
+              onChange={(v) => {
+                setFront(v as Side);
+                setFlipped(false);
+              }}
+            >
+              <SegmentedControlItem value="term" label="Term" />
+              <SegmentedControlItem value="definition" label="Definition" />
+            </SegmentedControl>
           </div>
-        </div>
+        </Panel>
       )}
     </div>
-  );
-}
-
-function Toggle({
-  label,
-  hint,
-  checked,
-  disabled,
-  onChange,
-}: {
-  label: string;
-  hint: string;
-  checked: boolean;
-  disabled?: boolean;
-  onChange: (v: boolean) => void;
-}) {
-  return (
-    <label className={`flex items-start justify-between gap-3 ${disabled ? "opacity-50" : "cursor-pointer"}`}>
-      <span>
-        <span className="block text-sm font-semibold">{label}</span>
-        <span className="block text-xs text-muted">{hint}</span>
-      </span>
-      <input
-        type="checkbox"
-        role="switch"
-        checked={checked}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.checked)}
-        className="peer sr-only"
-      />
-      <span className="relative mt-0.5 h-6 w-11 shrink-0 rounded-full bg-line transition-colors peer-checked:bg-accent peer-focus-visible:outline-2 peer-focus-visible:outline-accent after:absolute after:left-0.5 after:top-0.5 after:size-5 after:rounded-full after:bg-white after:transition-transform peer-checked:after:translate-x-5" />
-    </label>
   );
 }

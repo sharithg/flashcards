@@ -5,7 +5,13 @@ import { recordStudy } from "@/lib/store";
 import type { AnswerWith, Card, StudySet } from "@/lib/types";
 import { answerOf, distractors, isCorrectAnswer, promptOf, sample, shuffle } from "@/lib/utils";
 import { ModeShell } from "./ModeShell";
-import { Button, Icon } from "./ui";
+import { Button } from "@astryxdesign/core/Button";
+import { Card as Panel } from "@astryxdesign/core/Card";
+import { CheckboxInput } from "@astryxdesign/core/CheckboxInput";
+import { NumberInput } from "@astryxdesign/core/NumberInput";
+import { SegmentedControl, SegmentedControlItem } from "@astryxdesign/core/SegmentedControl";
+import { TextInput } from "@astryxdesign/core/TextInput";
+import { Icon } from "./ui";
 
 type QType = "tf" | "mc" | "written";
 const TYPE_LABELS: Record<QType, string> = { tf: "True / False", mc: "Multiple choice", written: "Written" };
@@ -64,59 +70,48 @@ export function Test({ set }: { set: StudySet }) {
   if (!questions) {
     return (
       <ModeShell set={set} mode="test">
-        <div className="mx-auto max-w-lg rounded-xl border border-line bg-surface p-6 sm:p-8">
-          <h2 className="text-2xl font-bold">Set up your test</h2>
+        <Panel padding={8} maxWidth={512} className="mx-auto">
+          <h2 className="font-heading text-2xl font-bold">Set up your test</h2>
           <div className="mt-6 space-y-6">
-            <label className="flex items-center justify-between gap-4">
-              <span className="font-semibold">Questions <span className="font-normal text-muted">(max {set.cards.length})</span></span>
-              <input
-                type="number"
-                min={1}
-                max={set.cards.length}
-                value={cfg.count}
-                onChange={(e) => setCfg({ ...cfg, count: Math.max(1, Math.min(set.cards.length, Number(e.target.value) || 1)) })}
-                className="w-20 rounded-xl border border-line bg-bg px-3 py-2 text-center font-semibold"
-              />
-            </label>
+            <NumberInput
+              label="Questions"
+              description={`Up to ${set.cards.length}`}
+              min={1}
+              max={set.cards.length}
+              value={cfg.count}
+              onChange={(n) => setCfg({ ...cfg, count: Math.max(1, Math.min(set.cards.length, n || 1)) })}
+              width={160}
+            />
             <div>
-              <div className="font-semibold">Answer with</div>
-              <div className="mt-2 inline-flex rounded-lg bg-surface-2 p-1 text-sm font-semibold">
-                {(["definition", "term"] as const).map((a) => (
-                  <button
-                    key={a}
-                    onClick={() => setCfg({ ...cfg, answerWith: a })}
-                    className={`rounded-md px-4 py-1.5 capitalize ${cfg.answerWith === a ? "bg-surface shadow-sm" : "text-muted"}`}
-                  >
-                    {a}
-                  </button>
-                ))}
+              <div className="mb-2 text-sm font-semibold" aria-hidden="true">
+                Answer with
               </div>
+              <SegmentedControl label="Answer with" value={cfg.answerWith} onChange={(v) => setCfg({ ...cfg, answerWith: v as AnswerWith })}>
+                <SegmentedControlItem value="definition" label="Definition" />
+                <SegmentedControlItem value="term" label="Term" />
+              </SegmentedControl>
             </div>
             <fieldset>
-              <legend className="font-semibold">Question types</legend>
+              <legend className="text-sm font-semibold">Question types</legend>
               <div className="mt-2 space-y-2">
                 {(Object.keys(TYPE_LABELS) as QType[]).map((t) => {
                   const on = cfg.types.includes(t);
                   return (
-                    <label key={t} className="flex cursor-pointer items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={on}
-                        disabled={on && cfg.types.length === 1}
-                        onChange={() => setCfg({ ...cfg, types: on ? cfg.types.filter((x) => x !== t) : [...cfg.types, t] })}
-                        className="size-4 accent-accent"
-                      />
-                      {TYPE_LABELS[t]}
-                    </label>
+                    <CheckboxInput
+                      key={t}
+                      label={TYPE_LABELS[t]}
+                      value={on}
+                      isDisabled={on && cfg.types.length === 1}
+                      disabledMessage="Keep at least one question type"
+                      onChange={() => setCfg({ ...cfg, types: on ? cfg.types.filter((x) => x !== t) : [...cfg.types, t] })}
+                    />
                   );
                 })}
               </div>
             </fieldset>
           </div>
-          <Button size="lg" className="mt-8 w-full" onClick={() => start()}>
-            Start test
-          </Button>
-        </div>
+          <Button variant="primary" size="lg" label="Start test" width="100%" className="mt-8" onClick={() => start()} />
+        </Panel>
       </ModeShell>
     );
   }
@@ -129,28 +124,26 @@ export function Test({ set }: { set: StudySet }) {
   return (
     <ModeShell set={set} mode="test">
       {submitted && (
-        <div className="mb-8 flex flex-col items-center gap-6 rounded-xl border border-line bg-surface p-6 sm:flex-row sm:p-8">
+        <Panel padding={8} className="mb-8 flex flex-col items-center gap-6 sm:flex-row">
           <div
             className="grid size-28 shrink-0 place-items-center rounded-full"
-            style={{ background: `conic-gradient(var(--good) ${pct * 3.6}deg, var(--bad-soft) 0)` }}
+            style={{ background: `conic-gradient(var(--color-success) ${pct * 3.6}deg, var(--color-error-muted) 0)` }}
           >
-            <div className="grid size-22 place-items-center rounded-full bg-surface text-2xl font-bold">{pct}%</div>
+            <div className="grid size-22 place-items-center rounded-full bg-card text-2xl font-bold">{pct}%</div>
           </div>
           <div className="flex-1 text-center sm:text-left">
-            <h2 className="text-2xl font-bold">
+            <h2 className="font-heading text-2xl font-bold">
               {pct === 100 ? "Perfect score!" : pct >= 80 ? "Great job!" : pct >= 50 ? "Getting there." : "Keep practicing."}
             </h2>
-            <p className="mt-1 text-muted">
+            <p className="mt-1 text-secondary">
               {score} correct · {questions.length - score} incorrect
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
-            <Button onClick={() => start()}>Retake test</Button>
-            <Button variant="secondary" onClick={() => setQuestions(null)}>
-              New settings
-            </Button>
+            <Button variant="primary" label="Retake test" onClick={() => start()} />
+            <Button variant="secondary" label="New settings" onClick={() => setQuestions(null)} />
           </div>
-        </div>
+        </Panel>
       )}
 
       <ol className="space-y-5">
@@ -158,7 +151,7 @@ export function Test({ set }: { set: StudySet }) {
           const showHeader = i === 0 || questions[i - 1].type !== q.type;
           return (
             <li key={i}>
-              {showHeader && <h3 className="mb-3 mt-8 text-sm font-bold uppercase tracking-wider text-muted first:mt-0">{TYPE_LABELS[q.type]}</h3>}
+              {showHeader && <h3 className="mb-3 mt-8 text-sm font-bold uppercase tracking-wider text-secondary first:mt-0">{TYPE_LABELS[q.type]}</h3>}
               <QuestionCard
                 n={i + 1}
                 total={questions.length}
@@ -175,19 +168,19 @@ export function Test({ set }: { set: StudySet }) {
 
       {!submitted && (
         <div className="mt-10 flex flex-col items-center gap-3 text-center">
-          <p className="text-sm text-muted">
+          <p className="text-sm text-secondary">
             {answeredCount} of {questions.length} answered
           </p>
           <Button
+            variant="primary"
             size="lg"
+            label="Submit test"
             onClick={() => {
               setSubmitted(true);
               recordStudy(set.id);
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-          >
-            Submit test
-          </Button>
+          />
         </div>
       )}
     </ModeShell>
@@ -217,11 +210,11 @@ function QuestionCard({
 
   const option = (val: string, label: string, isRight: boolean) => {
     const picked = value === val;
-    let style = picked ? "border-accent bg-accent-soft" : "border-line hover:border-accent";
+    let style = picked ? "border-accent bg-accent-muted" : "border-border hover:border-border-strong";
     if (graded) {
-      if (isRight) style = "border-good bg-good-soft";
-      else if (picked) style = "border-bad bg-bad-soft";
-      else style = "border-line opacity-50";
+      if (isRight) style = "border-success bg-success-muted";
+      else if (picked) style = "border-error bg-error-muted";
+      else style = "border-border opacity-50";
     }
     return (
       <button
@@ -229,7 +222,7 @@ function QuestionCard({
         disabled={graded}
         onClick={() => onChange(val)}
         aria-pressed={picked}
-        className={`rounded-lg border-2 p-4 text-left font-medium whitespace-pre-wrap transition-colors disabled:cursor-default ${style}`}
+        className={`rounded-lg border-2 p-4 text-left font-medium whitespace-pre-wrap transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default ${style}`}
       >
         {label}
       </button>
@@ -238,18 +231,18 @@ function QuestionCard({
 
   return (
     <div
-      className={`rounded-xl border bg-surface p-6 sm:p-8 ${
-        graded ? (result ? "border-good" : "border-bad") : "border-line"
+      className={`rounded-lg border bg-card p-6 sm:p-8 ${
+        graded ? (result ? "border-success" : "border-error") : "border-border"
       }`}
     >
-      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted">
+      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-secondary">
         <span>{promptLabel}</span>
         <span className="flex items-center gap-2">
           {graded &&
             (result ? (
-              <span className="flex items-center gap-1 text-good"><Icon name="check" className="size-4" /> Correct</span>
+              <span className="flex items-center gap-1 text-success"><Icon name="check" className="size-4" /> Correct</span>
             ) : (
-              <span className="flex items-center gap-1 text-bad"><Icon name="x" className="size-4" /> Incorrect</span>
+              <span className="flex items-center gap-1 text-error"><Icon name="x" className="size-4" /> Incorrect</span>
             ))}
           {n} of {total}
         </span>
@@ -258,8 +251,8 @@ function QuestionCard({
 
       {q.type === "tf" && (
         <>
-          <div className="mt-5 rounded-lg bg-surface-2 p-4">
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted">{answerWith}</div>
+          <div className="mt-5 rounded-md bg-gray-subtle p-4">
+            <div className="text-xs font-semibold uppercase tracking-wider text-secondary">{answerWith}</div>
             <div className="mt-1 font-medium whitespace-pre-wrap">{q.shown}</div>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -273,20 +266,21 @@ function QuestionCard({
 
       {q.type === "written" && (
         <div className="mt-6">
-          <input
+          <TextInput
+            label={`Answer for question ${n}`}
+            isLabelHidden
+            size="lg"
+            width="100%"
             value={value ?? ""}
-            disabled={graded}
-            onChange={(e) => onChange(e.target.value)}
+            isReadOnly={graded}
+            onChange={onChange}
             placeholder="Type the answer"
-            aria-label={`Answer for question ${n}`}
             autoComplete="off"
-            className={`w-full rounded-lg border-2 bg-bg px-4 py-3 text-lg outline-none focus:border-accent ${
-              graded ? (result ? "border-good" : "border-bad") : "border-line"
-            }`}
+            status={graded ? { type: result ? "success" : "error" } : undefined}
           />
           {graded && !result && (
-            <div className="mt-3 rounded-lg bg-good-soft p-4">
-              <div className="text-xs font-semibold text-good">Correct answer</div>
+            <div className="mt-3 rounded-md bg-success-muted p-4">
+              <div className="text-xs font-semibold text-success">Correct answer</div>
               <div className="mt-1 font-medium whitespace-pre-wrap">{expected}</div>
             </div>
           )}

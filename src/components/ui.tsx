@@ -1,74 +1,22 @@
-import Link from "next/link";
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
+import { Spinner as AstryxSpinner } from "@astryxdesign/core/Spinner";
 import type { MasteryCounts } from "@/lib/types";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+// Buttons, cards, inputs, menus and key hints come straight from Astryx
+// (`@astryxdesign/core/*`). This file only holds the app-specific pieces.
 
-const base =
-  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:border disabled:border-dashed disabled:border-line disabled:bg-surface-2 disabled:text-muted disabled:brightness-100";
-
-const variants: Record<Variant, string> = {
-  primary: "bg-accent text-accent-ink hover:brightness-110",
-  secondary: "border border-line bg-surface text-ink hover:bg-surface-2",
-  ghost: "text-muted hover:bg-surface-2 hover:text-ink",
-  danger: "border border-line bg-surface text-bad hover:bg-bad-soft",
-};
-
-const sizes = { sm: "h-9 px-4 text-sm", md: "h-11 px-5 text-sm", lg: "h-12 px-7 text-base" };
-
-export function buttonClass(variant: Variant = "primary", size: keyof typeof sizes = "md", extra = "") {
-  return `${base} ${variants[variant]} ${sizes[size]} ${extra}`;
-}
-
-export function Button({
-  variant = "primary",
-  size = "md",
-  className = "",
-  ...props
-}: ComponentProps<"button"> & { variant?: Variant; size?: keyof typeof sizes }) {
-  return <button type="button" className={buttonClass(variant, size, className)} {...props} />;
-}
-
-export function ButtonLink({
-  variant = "primary",
-  size = "md",
-  className = "",
-  ...props
-}: ComponentProps<typeof Link> & { variant?: Variant; size?: keyof typeof sizes }) {
-  return <Link className={buttonClass(variant, size, className)} {...props} />;
-}
-
-export function IconButton({
-  label,
-  className = "",
-  ...props
-}: ComponentProps<"button"> & { label: string }) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      title={label}
-      className={`inline-flex size-10 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-40 ${className}`}
-      {...props}
-    />
-  );
-}
-
+/** Page-level loading state: a centered Astryx spinner. */
 export function Spinner() {
   return (
-    <div className="flex justify-center py-24" role="status" aria-label="Loading">
-      <div className="size-8 animate-spin rounded-full border-3 border-line border-t-accent" />
+    <div className="flex justify-center py-24">
+      <AstryxSpinner size="xl" />
     </div>
   );
 }
 
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`rounded-xl border border-line bg-surface shadow-sm ${className}`}>{children}</div>;
-}
-
 /**
  * The one mastery indicator used across the app: a segmented bar in a fixed order
- * (green mastered, orange learning, grey new) with an optional matching legend.
+ * (green mastered, yellow learning, grey new) with an optional matching legend.
  */
 export function MasteryBar({
   counts,
@@ -83,12 +31,12 @@ export function MasteryBar({
   return (
     <div className={className}>
       <div
-        className="flex h-2 gap-px overflow-hidden rounded-full bg-surface-2"
+        className="flex h-2 gap-px overflow-hidden rounded-full bg-track"
         role="img"
         aria-label={`${counts.mastered} mastered, ${counts.learning} learning, ${counts.fresh} new`}
       >
-        <div className="bg-good transition-all" style={{ width: `${(counts.mastered / total) * 100}%` }} />
-        <div className="bg-warn transition-all" style={{ width: `${(counts.learning / total) * 100}%` }} />
+        <div className="bg-success transition-all" style={{ width: `${(counts.mastered / total) * 100}%` }} />
+        <div className="bg-warning transition-all" style={{ width: `${(counts.learning / total) * 100}%` }} />
       </div>
       {legend && <MasteryLegend counts={counts} className="mt-2" />}
     </div>
@@ -99,24 +47,15 @@ export function MasteryLegend({ counts, className = "" }: { counts: MasteryCount
   const item = (dot: string, n: number, label: string) => (
     <span className="flex items-center gap-1.5">
       <span className={`size-2 rounded-full ${dot}`} aria-hidden="true" />
-      <span className="font-semibold text-ink">{n}</span> {label}
+      <span className="font-semibold text-primary">{n}</span> {label}
     </span>
   );
   return (
-    <div className={`flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted ${className}`}>
-      {item("bg-good", counts.mastered, "mastered")}
-      {item("bg-warn", counts.learning, "learning")}
-      {item("bg-line", counts.fresh, "new")}
+    <div className={`flex flex-wrap gap-x-4 gap-y-1 text-xs text-secondary ${className}`}>
+      {item("bg-success", counts.mastered, "mastered")}
+      {item("bg-warning", counts.learning, "learning")}
+      {item("bg-track", counts.fresh, "new")}
     </div>
-  );
-}
-
-/** A short keyboard key label. */
-export function Kbd({ children }: { children: ReactNode }) {
-  return (
-    <kbd className="inline-flex min-w-5 items-center justify-center rounded border border-line bg-surface px-1 font-sans text-[11px] font-semibold text-muted">
-      {children}
-    </kbd>
   );
 }
 

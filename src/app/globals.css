@@ -1,84 +1,18 @@
-@import "tailwindcss";
+/* Cascade-layer order must be declared before any import (see `astryx docs styling-libraries/tailwind`). */
+@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;
 
-:root {
-  --bg: #f6f7fb;
-  --surface: #ffffff;
-  --surface-2: #edeff4;
-  --line: #d9dde8;
-  --ink: #1a1d28;
-  --muted: #5d6478;
-  --accent: #3546f0;
-  --accent-ink: #ffffff;
-  --accent-soft: #e3e7ff;
-  --good: #0e7350;
-  --good-soft: #dcf5ea;
-  --bad: #c92a3a;
-  --bad-soft: #fde4e7;
-  --warn: #9a5006;
-  --warn-soft: #fff0dc;
-  --violet: #7a3fd1;
-  --violet-soft: #f0e7fd;
-  --teal: #0b7285;
-  --teal-soft: #dff4f7;
-  --rose: #c2255c;
-  --rose-soft: #fde6ee;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0b0e1f;
-    --surface: #161a33;
-    --surface-2: #232845;
-    --line: #2f3557;
-    --ink: #eef0fb;
-    --muted: #a3a9c6;
-    --accent: #7b8bff;
-    --accent-ink: #0b0e1f;
-    --accent-soft: #1f2550;
-    --good: #4fd6a2;
-    --good-soft: #143a2e;
-    --bad: #ff7b8a;
-    --bad-soft: #43202a;
-    --warn: #ffb35c;
-    --warn-soft: #3d2c16;
-    --violet: #c49bff;
-    --violet-soft: #2d2150;
-    --teal: #5fd0e0;
-    --teal-soft: #13343c;
-    --rose: #ff8fb5;
-    --rose-soft: #40192a;
-  }
-}
-
-@theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-line: var(--line);
-  --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
-  --color-accent-soft: var(--accent-soft);
-  --color-good: var(--good);
-  --color-good-soft: var(--good-soft);
-  --color-bad: var(--bad);
-  --color-bad-soft: var(--bad-soft);
-  --color-warn: var(--warn);
-  --color-warn-soft: var(--warn-soft);
-  --color-violet: var(--violet);
-  --color-violet-soft: var(--violet-soft);
-  --color-teal: var(--teal);
-  --color-teal-soft: var(--teal-soft);
-  --color-rose: var(--rose);
-  --color-rose-soft: var(--rose-soft);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "@astryxdesign/core/reset.css";
+@import "@astryxdesign/core/astryx.css";
+@import "@astryxdesign/theme-neutral/theme.css";
+@import "@astryxdesign/core/tailwind-theme.css";
+@import "tailwindcss/utilities.css" layer(utilities);
 
 body {
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--color-background-body);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
 }
 
 /* 3D flip card */
@@ -107,7 +41,7 @@ body {
 
 /* Flashcards in browser fullscreen */
 .fs-wrap:fullscreen {
-  background: var(--bg);
+  background: var(--color-background-body);
   display: flex;
   flex-direction: column;
   justify-content: center;

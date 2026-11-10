@@ -1,4 +1,11 @@
-const COLORS = ["var(--accent)", "var(--good)", "var(--warn)", "var(--violet)", "var(--rose)", "var(--teal)"];
+const COLORS = [
+  "var(--color-text-blue)",
+  "var(--color-success)",
+  "var(--color-warning)",
+  "var(--color-text-purple)",
+  "var(--color-text-pink)",
+  "var(--color-text-teal)",
+];
 
 /** A one-shot burst of falling confetti. Positions are deterministic so render stays pure. */
 export function Confetti({ pieces = 60 }: { pieces?: number }) {
