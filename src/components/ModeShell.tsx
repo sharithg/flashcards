@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { StudySet } from "@/lib/types";
-import { Icon } from "./ui";
+import { Icon } from "./common";
 
 export const MODES = [
   { slug: "flashcards", label: "Flashcards", icon: "cards" },
@@ -28,22 +28,20 @@ export function ModeShell({
       <div className="flex flex-wrap items-center gap-3 py-5">
         <Link
           href={`/sets/${set.id}`}
-          className="flex min-w-0 items-center gap-1 rounded-lg py-2 pr-3 text-sm font-semibold text-muted hover:text-ink"
+          className="flex min-w-0 items-center gap-1 rounded-md py-1.5 pr-2 text-sm font-semibold text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/60"
         >
           <Icon name="left" className="size-4" />
           <span className="truncate">{set.title}</span>
         </Link>
-        <nav className="order-last flex w-full gap-1 overflow-x-auto rounded-lg bg-surface-2 p-1 sm:order-none sm:ml-auto sm:w-auto">
+        <nav className="order-last flex w-full gap-0.5 overflow-x-auto rounded-md border bg-card p-0.5 sm:order-none sm:ml-auto sm:w-auto">
           {MODES.map((m) => (
             <Link
               key={m.slug}
               href={`/sets/${set.id}/${m.slug}`}
               aria-current={m.slug === mode ? "page" : undefined}
-              className={`flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-semibold transition-colors sm:flex-none ${
-                m.slug === mode ? "bg-surface text-ink shadow-sm" : "text-muted hover:text-ink"
-              }`}
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-sm border border-transparent px-2 py-1 text-sm font-semibold whitespace-nowrap text-muted-foreground transition-colors outline-none hover:bg-accent/60 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/60 aria-[current=page]:border-border aria-[current=page]:bg-accent aria-[current=page]:text-foreground sm:flex-none sm:px-3"
             >
-              <Icon name={m.icon} className="size-4" />
+              <Icon name={m.icon} className="hidden size-4 min-[420px]:block" />
               {m.label}
             </Link>
           ))}

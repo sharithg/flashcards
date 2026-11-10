@@ -1,19 +1,21 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/ui/themes";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Sans, Source_Code_Pro } from "next/font/google";
 import { Suspense } from "react";
 import { DataProvider } from "@/components/DataProvider";
 import { Header } from "@/components/Header";
-import { Spinner } from "@/components/ui";
+import { Spinner } from "@/components/common";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sourceCode = Source_Code_Pro({
+  variable: "--font-source-code",
   subsets: ["latin"],
 });
 
@@ -24,9 +26,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className={`${plexSans.variable} ${sourceCode.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
-        <ClerkProvider>
+        <ClerkProvider appearance={{ theme: shadcn }}>
           <Header />
           <main className="flex-1">
             <Suspense fallback={<Spinner />}>

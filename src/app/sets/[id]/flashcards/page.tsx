@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FlashcardsScreen } from "@/components/screens";
-import { Spinner } from "@/components/ui";
+import { Spinner } from "@/components/common";
 
 export const metadata: Metadata = { title: "Flashcards" };
 

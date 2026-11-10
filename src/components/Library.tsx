@@ -1,11 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Flame, Sparkles } from "lucide-react";
+import { useState, type ReactNode } from "react";
 import { togglePin, useHydrated, useSets, useStudyDays } from "@/lib/store";
 import type { StudySet } from "@/lib/types";
 import { masteryCounts, pluralize, relativeTime, streakFrom } from "@/lib/utils";
-import { ButtonLink, Icon, MasteryBar } from "./ui";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ButtonLink, Icon, IconButton, MasteryBar } from "./common";
 
 type Sort = "recent" | "alpha" | "least";
 
@@ -53,75 +57,71 @@ export function Library() {
   return (
     <div className="mx-auto w-full max-w-4xl px-4 pb-24 sm:px-6">
       <div className="pt-10">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Your library</h1>
+        <h1 className="text-3xl font-bold sm:text-4xl">Your library</h1>
         {sets !== null && sets.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-3">
-            <div className="flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3">
-              <span className="text-2xl" aria-hidden="true">{streak > 0 ? "🔥" : "✨"}</span>
-              <div>
-                <div className="font-bold">{streak > 0 ? `${streak}-day streak` : "Start a streak"}</div>
-                <div className="text-xs text-muted">
-                  {studiedToday ? "You studied today. Nice." : streak > 0 ? "Study today to keep it going" : "Study a little every day"}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3">
-              <span className="grid size-9 place-items-center rounded-lg bg-warn-soft text-warn">
-                <Icon name="learn" />
-              </span>
-              <div>
-                <div className="font-bold">{pluralize(toLearn, "term")} to learn</div>
-                <div className="text-xs text-muted">across {pluralize(sets.length, "set")}</div>
-              </div>
-            </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <StatTile
+              icon={streak > 0 ? <Flame className="size-5" /> : <Sparkles className="size-5" />}
+              tone="bg-warn-soft text-warn"
+              title={streak > 0 ? `${streak}-day streak` : "Start a streak"}
+              hint={studiedToday ? "You studied today. Nice." : streak > 0 ? "Study today to keep it going" : "Study a little every day"}
+            />
+            <StatTile
+              icon={<Icon name="learn" />}
+              tone="bg-violet-soft text-violet"
+              title={`${pluralize(toLearn, "term")} to learn`}
+              hint={`across ${pluralize(sets.length, "set")}`}
+            />
           </div>
         )}
       </div>
 
-      <div className="mt-8 flex flex-wrap items-center gap-3">
-        <label className="relative min-w-0 flex-1 basis-60">
-          <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
-          <input
+      <div className="mt-8 flex flex-wrap items-center gap-2">
+        <div className="relative min-w-0 flex-1 basis-60">
+          <Icon name="search" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search sets and terms"
             aria-label="Search sets"
-            className="h-10 w-full rounded-lg border border-line bg-surface pl-10 pr-4 text-sm outline-none focus:border-accent"
+            className="pl-9"
           />
-        </label>
-        <label className="flex h-10 items-center gap-2 rounded-lg border border-line bg-surface pl-3 text-sm">
-          <span className="text-muted">Sort:</span>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as Sort)}
-            className="h-full rounded-lg bg-transparent pr-2 font-semibold outline-none"
-          >
+        </div>
+        <Select value={sort} onValueChange={(v) => setSort(v as Sort)}>
+          <SelectTrigger aria-label="Sort sets" className="min-w-44">
+            <span className="text-muted-foreground">Sort:</span>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent align="end" position="popper">
             {(Object.keys(SORTS) as Sort[]).map((k) => (
-              <option key={k} value={k}>
+              <SelectItem key={k} value={k}>
                 {SORTS[k].label}
-              </option>
+              </SelectItem>
             ))}
-          </select>
-        </label>
+          </SelectContent>
+        </Select>
       </div>
 
       {sets === null ? (
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {[0, 1].map((i) => (
-            <div key={i} className="h-48 animate-pulse rounded-xl bg-surface-2" />
+            <Skeleton key={i} className="h-52 rounded-md" />
           ))}
         </div>
       ) : sets.length === 0 ? (
-        <div className="mt-6 rounded-xl border-2 border-dashed border-line p-12 text-center">
-          <h2 className="text-xl font-bold">No study sets yet</h2>
-          <p className="mt-1 text-muted">Create your first set of flashcards to get started.</p>
+        <div className="mt-6 rounded-md border border-dashed bg-card p-12 text-center">
+          <div className="mx-auto grid size-12 place-items-center rounded-md border bg-muted">
+            <Icon name="cards" className="size-6" />
+          </div>
+          <h2 className="mt-4 text-xl font-bold">No study sets yet</h2>
+          <p className="mt-1 text-muted-foreground">Create your first set of flashcards to get started.</p>
           <ButtonLink href="/create" className="mt-6">
             <Icon name="plus" className="size-4" /> Create a set
           </ButtonLink>
         </div>
       ) : filtered.length === 0 ? (
-        <p className="mt-10 text-center text-muted">No sets match &ldquo;{query}&rdquo;.</p>
+        <p className="mt-10 text-center text-muted-foreground">No sets match &ldquo;{query}&rdquo;.</p>
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {filtered.map((s) => (
@@ -129,7 +129,7 @@ export function Library() {
           ))}
           <Link
             href="/create?import"
-            className="flex min-h-48 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-line p-6 text-center text-muted transition-colors hover:border-accent hover:text-accent"
+            className="flex min-h-52 flex-col items-center justify-center gap-1 rounded-md border border-dashed p-6 text-center text-muted-foreground transition-colors outline-none hover:border-foreground/40 hover:bg-card hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/60"
           >
             <Icon name="plus" className="size-6" />
             <span className="mt-1 font-bold">New set</span>
@@ -141,48 +141,56 @@ export function Library() {
   );
 }
 
+function StatTile({ icon, tone, title, hint }: { icon: ReactNode; tone: string; title: string; hint: string }) {
+  return (
+    <div className="flex items-center gap-3 rounded-md border bg-card px-4 py-3">
+      <span className={`grid size-9 shrink-0 place-items-center rounded-md ${tone}`}>{icon}</span>
+      <div>
+        <div className="font-bold">{title}</div>
+        <div className="text-xs text-muted-foreground">{hint}</div>
+      </div>
+    </div>
+  );
+}
+
 function SetCard({ set }: { set: StudySet }) {
   const hydrated = useHydrated();
   const counts = masteryCounts(set);
   const action = nextAction(set);
   return (
-    <div className="group relative flex flex-col rounded-xl border border-line bg-surface p-5 shadow-sm transition-all hover:border-accent hover:shadow-md">
+    <div className="group relative flex flex-col rounded-md border bg-card p-5 transition-colors hover:border-foreground/40">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <h2 className="line-clamp-2 text-lg font-bold">
+          <h2 className="line-clamp-2 text-lg leading-snug font-bold">
             {/* Stretched link: the whole card opens the set; inner controls sit above it. */}
-            <Link href={`/sets/${set.id}`} className="outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:outline-2 focus-visible:after:outline-accent group-hover:text-accent">
+            <Link
+              href={`/sets/${set.id}`}
+              className="outline-none after:absolute after:inset-0 after:rounded-md focus-visible:after:ring-3 focus-visible:after:ring-ring/60 group-hover:underline group-hover:decoration-foreground/30 group-hover:underline-offset-4"
+            >
               {set.title}
             </Link>
           </h2>
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-xs text-muted-foreground">
             {pluralize(set.cards.length, "term")}
             {hydrated && ` · ${relativeTime(set.lastStudiedAt)}`}
           </p>
         </div>
-        <button
-          type="button"
+        <IconButton
+          label={set.pinned ? "Unpin set" : "Pin set to top"}
+          size="icon-sm"
           onClick={() => togglePin(set.id)}
           aria-pressed={!!set.pinned}
-          aria-label={set.pinned ? "Unpin set" : "Pin set to top"}
-          title={set.pinned ? "Unpin" : "Pin to top"}
-          className={`relative z-10 -mr-2 -mt-1 grid size-9 place-items-center rounded-lg transition-colors hover:bg-surface-2 ${
-            set.pinned ? "text-accent" : "text-muted opacity-60 hover:opacity-100"
-          }`}
+          className={`relative z-10 -mt-1 -mr-2 ${set.pinned ? "text-brand" : "text-muted-foreground opacity-70 hover:opacity-100"}`}
         >
           <Icon name="pin" filled={set.pinned} className="size-4" />
-        </button>
+        </IconButton>
       </div>
-      {set.description && <p className="mt-2 line-clamp-2 text-sm text-muted">{set.description}</p>}
+      {set.description && <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{set.description}</p>}
       <div className="mt-auto pt-5">
-        <MasteryBar counts={counts} />
-        <p className="mt-2 text-xs text-muted">
-          <span className="font-semibold text-good">{counts.mastered} mastered</span> ·{" "}
-          <span className="font-semibold text-warn">{counts.learning} learning</span> · {counts.fresh} new
-        </p>
+        <MasteryBar counts={counts} legend />
         <Link
           href={action.href}
-          className="relative z-10 mt-4 flex items-center justify-between rounded-lg bg-accent-soft px-3 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-accent-ink"
+          className="relative z-10 mt-4 flex items-center justify-between rounded-md border bg-muted/60 px-3 py-2 text-sm font-semibold transition-colors outline-none hover:border-primary-edge hover:bg-primary hover:text-primary-foreground focus-visible:ring-3 focus-visible:ring-ring/60"
         >
           {action.label}
           <Icon name="right" className="size-4" />

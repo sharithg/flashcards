@@ -5,7 +5,13 @@ import { useEffect, useState } from "react";
 import { saveSet } from "@/lib/store";
 import type { Card, StudySet } from "@/lib/types";
 import { uid } from "@/lib/utils";
-import { Button, Icon, IconButton } from "./ui";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { Eyebrow, Icon, IconButton } from "./common";
 
 const blank = (id: string = uid()): Card => ({ id, term: "", definition: "" });
 
@@ -105,7 +111,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
   }
 
   const inputCls =
-    "w-full border-0 border-b-2 border-line bg-transparent px-0 py-2 text-base outline-none field-sizing-content resize-none focus:border-accent";
+    "w-full resize-none border-0 border-b-2 border-border bg-transparent px-0 py-2 text-base outline-none field-sizing-content focus:border-primary";
 
   return (
     <form
@@ -121,11 +127,11 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
         }
       }}
     >
-      <div className="sticky top-16 z-10 -mx-4 flex items-center justify-between gap-4 bg-bg/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
+      <div className="sticky top-14 z-10 -mx-4 flex items-center justify-between gap-4 border-b border-transparent bg-background/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6">
         <h1 className="text-2xl font-bold">{initial ? "Edit set" : "Create a new study set"}</h1>
         <div className="flex gap-2">
           {initial && (
-            <Button variant="secondary" onClick={() => router.push(`/sets/${initial.id}`)}>
+            <Button variant="outline" onClick={() => router.push(`/sets/${initial.id}`)}>
               Cancel
             </Button>
           )}
@@ -134,13 +140,13 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
       </div>
 
       {error && (
-        <div role="alert" className="mb-4 rounded-xl bg-bad-soft px-4 py-3 text-sm font-semibold text-bad">
-          {error}
-        </div>
+        <Alert variant="destructive" className="mb-4 border-destructive/40 bg-bad-soft">
+          <AlertDescription className="font-semibold text-bad">{error}</AlertDescription>
+        </Alert>
       )}
 
       <div className="space-y-3">
-        <input
+        <Input
           value={title}
           onChange={(e) => {
             setTitle(e.target.value);
@@ -149,36 +155,36 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
           placeholder='Enter a title, like "Biology – Chapter 22"'
           aria-label="Title"
           autoFocus={!initial && !startWithImport}
-          className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-lg font-semibold outline-none focus:border-accent"
+          className="h-12 px-4 text-lg font-semibold md:text-lg"
         />
-        <textarea
+        <Textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Add a description…"
           aria-label="Description"
           rows={2}
-          className="w-full resize-none rounded-xl border border-line bg-surface px-4 py-3 outline-none focus:border-accent"
+          className="resize-none px-4 py-3"
         />
       </div>
 
       <div className="mt-6 flex items-center justify-between">
-        <Button variant="secondary" size="sm" onClick={() => setImportOpen((o) => !o)}>
+        <Button variant="outline" size="sm" onClick={() => setImportOpen((o) => !o)} aria-expanded={importOpen}>
           <Icon name="plus" className="size-4" /> Import
         </Button>
-        <span className="text-sm text-muted">{cards.length} cards</span>
+        <span className="text-sm text-muted-foreground">{cards.length} cards</span>
       </div>
 
       {importOpen && (
-        <div className="mt-4 rounded-lg border border-line bg-surface p-5">
-          <div className="text-sm font-semibold">Import your data</div>
-          <p className="text-sm text-muted">Copy and paste from Word, Excel, Google Docs, etc.</p>
-          <textarea
+        <div className="mt-4 rounded-md border bg-card p-5">
+          <div className="font-bold">Import your data</div>
+          <p className="text-sm text-muted-foreground">Copy and paste from Word, Excel, Google Docs, etc.</p>
+          <Textarea
             value={importText}
             onChange={(e) => setImportText(e.target.value)}
             rows={6}
             autoFocus
             placeholder={`Word 1${TERM_SEPS[termSep]}Definition 1${CARD_SEPS[cardSep]}Word 2${TERM_SEPS[termSep]}Definition 2`}
-            className="mt-3 w-full rounded-xl border border-line bg-bg p-3 font-mono text-sm outline-none focus:border-accent"
+            className="mt-3 min-h-32 bg-background font-mono text-sm md:text-sm"
           />
           <div className="mt-3 flex flex-wrap items-end gap-6 text-sm">
             <Radio label="Between term and definition" value={termSep} options={["tab", "comma", "dash"]} onChange={setTermSep} />
@@ -197,21 +203,22 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
 
       <ol className="mt-4 space-y-4">
         {cards.map((card, i) => (
-          <li key={card.id} id={`card-${card.id}`} className="scroll-mt-36 rounded-lg border border-line bg-surface focus-within:border-accent">
-            <div className="flex items-center justify-between border-b border-line px-4 py-1.5">
-              <span className="text-sm font-bold text-muted">{i + 1}</span>
+          <li key={card.id} id={`card-${card.id}`} className="scroll-mt-36 rounded-md border bg-card transition-colors focus-within:border-primary-edge">
+            <div className="flex items-center justify-between border-b px-4 py-1">
+              <span className="font-mono text-sm font-bold text-muted-foreground">{i + 1}</span>
               <div className="flex">
-                <IconButton label="Move up" onClick={() => move(i, -1)} disabled={i === 0}>
+                <IconButton size="icon-sm" className="text-muted-foreground" label="Move up" onClick={() => move(i, -1)} disabled={i === 0}>
                   <Icon name="up" className="size-4" />
                 </IconButton>
-                <IconButton label="Move down" onClick={() => move(i, 1)} disabled={i === cards.length - 1}>
+                <IconButton size="icon-sm" className="text-muted-foreground" label="Move down" onClick={() => move(i, 1)} disabled={i === cards.length - 1}>
                   <Icon name="down" className="size-4" />
                 </IconButton>
                 <IconButton
+                  size="icon-sm"
                   label="Delete card"
                   onClick={() => setCards((cs) => cs.filter((c) => c.id !== card.id))}
                   disabled={cards.length <= 1}
-                  className="hover:text-bad"
+                  className="text-muted-foreground hover:text-destructive"
                 >
                   <Icon name="trash" className="size-4" />
                 </IconButton>
@@ -229,7 +236,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
                   rows={1}
                   className={inputCls}
                 />
-                <span className="mt-1 block text-xs font-semibold uppercase tracking-wider text-muted">Term</span>
+                <Eyebrow className="mt-1">Term</Eyebrow>
               </label>
               <label className="block">
                 <textarea
@@ -248,7 +255,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
                   rows={1}
                   className={inputCls}
                 />
-                <span className="mt-1 block text-xs font-semibold uppercase tracking-wider text-muted">Definition</span>
+                <Eyebrow className="mt-1">Definition</Eyebrow>
               </label>
             </div>
           </li>
@@ -258,7 +265,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
       <button
         type="button"
         onClick={addCard}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-line py-6 font-bold text-muted transition-colors hover:border-accent hover:text-accent"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-md border border-dashed py-6 font-bold text-muted-foreground transition-colors outline-none hover:border-foreground/40 hover:bg-card hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/60"
       >
         <Icon name="plus" /> Add card
       </button>
@@ -285,15 +292,15 @@ function Radio<T extends string>({
 }) {
   return (
     <fieldset>
-      <legend className="mb-1 font-semibold">{label}</legend>
-      <div className="flex gap-4">
+      <legend className="mb-2 font-semibold">{label}</legend>
+      <RadioGroup value={value} onValueChange={(v) => onChange(v as T)} className="flex gap-4">
         {options.map((o) => (
-          <label key={o} className="flex cursor-pointer items-center gap-1.5 capitalize">
-            <input type="radio" checked={value === o} onChange={() => onChange(o)} className="accent-accent" />
+          <Label key={o} className="cursor-pointer font-normal capitalize">
+            <RadioGroupItem value={o} />
             {o}
-          </label>
+          </Label>
         ))}
-      </div>
+      </RadioGroup>
     </fieldset>
   );
 }
