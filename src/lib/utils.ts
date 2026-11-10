@@ -1,3 +1,5 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import type { AnswerWith, Card, MasteryCounts, StudySet } from "./types";
 
 export function uid(): string {
@@ -147,4 +149,8 @@ export function relativeTime(ts: number | undefined): string {
   if (days === 1) return "Studied yesterday";
   if (days < 30) return `Studied ${days} days ago`;
   return `Studied ${new Date(ts).toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }

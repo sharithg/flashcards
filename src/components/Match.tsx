@@ -5,7 +5,8 @@ import { recordMatchTime } from "@/lib/store";
 import type { StudySet } from "@/lib/types";
 import { formatTime, sample, shuffle } from "@/lib/utils";
 import { ModeShell } from "./ModeShell";
-import { Button, Icon } from "./ui";
+import { Button } from "@/components/ui/button";
+import { Eyebrow, Icon } from "./common";
 
 const PAIRS = 6;
 const PENALTY_MS = 1000;
@@ -77,18 +78,18 @@ export function Match({ set }: { set: StudySet }) {
   }
 
   const timer = (
-    <span className="rounded-md bg-surface-2 px-3 py-1.5 font-mono text-sm font-semibold tabular-nums">{formatTime(elapsed)}</span>
+    <span className="rounded-md border bg-card px-3 py-1 font-mono text-sm font-semibold tabular-nums">{formatTime(elapsed)}</span>
   );
 
   return (
     <ModeShell set={set} mode="match" toolbar={phase === "playing" ? timer : undefined}>
       {phase === "ready" && (
-        <div className="mx-auto max-w-lg rounded-xl border border-line bg-surface p-8 text-center sm:p-12">
-          <div className="mx-auto grid size-16 place-items-center rounded-lg bg-accent-soft text-accent">
+        <div className="mx-auto max-w-lg rounded-md border bg-card p-8 text-center sm:p-12">
+          <div className="mx-auto grid size-16 place-items-center rounded-md border border-rose/30 bg-rose-soft text-rose">
             <Icon name="match" className="size-8" />
           </div>
           <h2 className="mt-5 text-3xl font-bold">Ready to play?</h2>
-          <p className="mt-2 text-muted">
+          <p className="mt-2 text-muted-foreground">
             Match each term with its definition as fast as you can. Wrong matches add {PENALTY_MS / 1000} second to your time.
           </p>
           {set.bestMatchTime !== undefined && (
@@ -112,14 +113,14 @@ export function Match({ set }: { set: StudySet }) {
                 onClick={() => pick(tile)}
                 disabled={isMatched}
                 aria-pressed={isSelected}
-                className={`flex min-h-32 items-center justify-center rounded-lg border-2 p-4 text-center font-medium break-words transition-all duration-200 ${
+                className={`flex min-h-32 items-center justify-center rounded-md border-[1.5px] p-4 text-center font-medium break-words transition-all duration-200 outline-none focus-visible:ring-3 focus-visible:ring-ring/60 ${
                   isMatched
                     ? "pointer-events-none scale-90 border-good bg-good-soft opacity-0"
                     : isWrong
                       ? "animate-shake border-bad bg-bad-soft"
                       : isSelected
-                        ? "border-accent bg-accent-soft"
-                        : "border-line bg-surface hover:border-accent"
+                        ? "-translate-y-0.5 border-primary-edge bg-warn-soft shadow-[0_3px_0_0_var(--primary-base)]"
+                        : "border-border bg-card hover:border-foreground/40"
                 }`}
               >
                 <span className={tile.text.length > 60 ? "text-sm" : ""}>{tile.text}</span>
@@ -130,11 +131,11 @@ export function Match({ set }: { set: StudySet }) {
       )}
 
       {phase === "done" && result && (
-        <div className="mx-auto max-w-lg rounded-xl border border-line bg-surface p-8 text-center sm:p-12">
-          <p className="text-sm font-semibold uppercase tracking-wider text-accent">{result.best ? "New personal best!" : "Nice matching"}</p>
+        <div className="mx-auto max-w-lg rounded-md border bg-card p-8 text-center sm:p-12">
+          <Eyebrow className="text-brand">{result.best ? "New personal best!" : "Nice matching"}</Eyebrow>
           <div className="mt-2 font-mono text-6xl font-bold tabular-nums">{formatTime(result.time)}</div>
           {!result.best && set.bestMatchTime !== undefined && (
-            <p className="mt-3 text-muted">Your best is {formatTime(set.bestMatchTime)}</p>
+            <p className="mt-3 text-muted-foreground">Your best is {formatTime(set.bestMatchTime)}</p>
           )}
           <Button size="lg" className="mt-8" onClick={start}>
             Play again

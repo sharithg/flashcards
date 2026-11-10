@@ -6,7 +6,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { recordStudy, toggleStar } from "@/lib/store";
 import type { Card, StudySet } from "@/lib/types";
 import { pluralize, shuffle } from "@/lib/utils";
-import { Button, Icon, IconButton, Kbd } from "./ui";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Eyebrow, Icon, IconButton, Kbd } from "./common";
 
 type Side = "term" | "definition";
 type DeckCard = Card & { setId: string };
@@ -23,25 +28,26 @@ function Face({ card, side, label, back, hint }: { card: DeckCard; side: Side; l
   const text = side === "term" ? card.term : card.definition;
   return (
     <div
-      className={`flip-face ${back ? "flip-back" : ""} flex flex-col rounded-xl border border-line bg-surface p-5 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.25)]`}
+      className={`flip-face ${back ? "flip-back" : ""} flex flex-col rounded-md border bg-card p-5 shadow-[0_4px_0_0_var(--border)]`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted">{label}</span>
+        <Eyebrow>{label}</Eyebrow>
         <IconButton
           label={card.starred ? "Unstar" : "Star"}
           onClick={(e) => {
             e.stopPropagation();
             toggleStar(card.setId, card.id);
           }}
-          className={`-mr-2 -mt-2 ${card.starred ? "text-warn hover:text-warn" : ""}`}
+          size="icon-sm"
+          className={`-mt-1.5 -mr-2 ${card.starred ? "text-warn hover:text-warn" : "text-muted-foreground"}`}
         >
-          <Icon name="star" filled={card.starred} />
+          <Icon name="star" filled={card.starred} className="size-4" />
         </IconButton>
       </div>
       <div className="flex flex-1 items-center justify-center overflow-y-auto px-2 py-2 text-center">
         <p className={`${textSize(text)} font-medium leading-snug whitespace-pre-wrap break-words`}>{text}</p>
       </div>
-      {hint && <p className="text-center text-xs text-muted/70">Click or press Space to flip</p>}
+      {hint && <p className="text-center text-xs text-muted-foreground">Click or press Space to flip</p>}
     </div>
   );
 }
@@ -166,20 +172,20 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
   if (done) {
     const total = known.length + learning.length;
     return (
-      <div className="rounded-xl border border-line bg-surface p-8 text-center sm:p-12">
-        <p className="text-sm font-semibold uppercase tracking-wider text-accent">Round complete</p>
+      <div className="rounded-md border bg-card p-8 text-center sm:p-12">
+        <Eyebrow className="text-brand">Round complete</Eyebrow>
         <h2 className="mt-2 text-3xl font-bold">
           {tracking ? (learning.length === 0 ? "You know every card!" : "Nice progress.") : "You reviewed every card."}
         </h2>
         {tracking && total > 0 && (
           <div className="mx-auto mt-8 grid max-w-sm grid-cols-2 gap-3">
-            <div className="rounded-lg bg-good-soft p-4">
+            <div className="rounded-md border border-good/30 bg-good-soft p-4">
               <div className="text-3xl font-bold text-good">{known.length}</div>
-              <div className="text-sm font-medium text-muted">Know</div>
+              <div className="text-sm font-medium text-muted-foreground">Know</div>
             </div>
-            <div className="rounded-lg bg-warn-soft p-4">
+            <div className="rounded-md border border-warn/30 bg-warn-soft p-4">
               <div className="text-3xl font-bold text-warn">{learning.length}</div>
-              <div className="text-sm font-medium text-muted">Still learning</div>
+              <div className="text-sm font-medium text-muted-foreground">Still learning</div>
             </div>
           </div>
         )}
@@ -190,9 +196,9 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
           <Button variant="secondary" onClick={() => restart()}>
             <Icon name="rotate" className="size-4" /> Restart flashcards
           </Button>
-          <Link href={`/sets/${set.id}/learn`} className="inline-flex h-11 items-center px-5 text-sm font-semibold text-accent hover:underline">
-            Try Learn mode →
-          </Link>
+          <Button asChild variant="link">
+            <Link href={`/sets/${set.id}/learn`}>Try Learn mode →</Link>
+          </Button>
         </div>
       </div>
     );
@@ -200,19 +206,19 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
 
   if (!card) {
     return (
-      <div className="rounded-xl border border-dashed border-line p-12 text-center text-muted">
+      <div className="rounded-md border border-dashed p-12 text-center text-muted-foreground">
         {starredOnly ? (
           <>
             No starred cards.{" "}
-            <button
-              className="font-semibold text-accent hover:underline"
+            <Button
+              variant="link"
               onClick={() => {
                 setStarredOnly(false);
                 restart({ starredOnly: false });
               }}
             >
               Study all cards
-            </button>
+            </Button>
           </>
         ) : (
           "This set has no cards yet."
@@ -223,13 +229,6 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
 
   const back: Side = front === "term" ? "definition" : "term";
   const label = (s: Side) => (s === "term" ? "Term" : "Definition");
-  const navBtn =
-    "grid size-11 place-items-center rounded-lg border border-line bg-surface transition-colors hover:bg-surface-2 disabled:opacity-40";
-  const toolBtn = (active: boolean) =>
-    `inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold transition-colors ${
-      active ? "bg-accent-soft text-accent" : "text-muted hover:bg-surface-2 hover:text-ink"
-    }`;
-
   return (
     <div ref={wrapRef} className="fs-wrap">
       {tracking && (
@@ -263,79 +262,83 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+      <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
         <div className="flex items-center gap-1">
           {!compact && (
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setShowSettings((s) => !s)}
               aria-expanded={showSettings}
-              className={toolBtn(showSettings)}
               title="Study options"
             >
               <Icon name="settings" className="size-4" />
               <span className="hidden sm:inline">Options</span>
-            </button>
+            </Button>
           )}
-          <button onClick={toggleShuffle} aria-pressed={shuffled} className={toolBtn(shuffled)} title="Shuffle (S)">
+          <Button variant="ghost" size="sm" onClick={toggleShuffle} aria-pressed={shuffled} title="Shuffle (S)">
             <Icon name="shuffle" className="size-4" />
             <span className="hidden sm:inline">{shuffled ? "Shuffled" : "Shuffle"}</span>
-          </button>
+          </Button>
         </div>
 
         {tracking ? (
           <div className="flex items-center gap-3">
-            <button
+            <Button
+              variant="outline"
+              size="icon-lg"
               onClick={() => mark(false)}
               aria-label="Still learning"
               title="Still learning (←)"
-              className="grid size-11 place-items-center rounded-lg border-2 border-warn text-warn transition-colors hover:bg-warn-soft"
+              className="border-warn/60 text-warn hover:bg-warn-soft"
             >
               <Icon name="x" className="size-5" />
-            </button>
+            </Button>
             <span className="min-w-14 text-center text-sm font-semibold tabular-nums">
               {safeIndex + 1} / {deck.length}
             </span>
-            <button
+            <Button
+              variant="outline"
+              size="icon-lg"
               onClick={() => mark(true)}
               aria-label="Know"
               title="Know (→)"
-              className="grid size-11 place-items-center rounded-lg border-2 border-good text-good transition-colors hover:bg-good-soft"
+              className="border-good/60 text-good hover:bg-good-soft"
             >
               <Icon name="check" className="size-5" />
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <button onClick={prev} disabled={safeIndex === 0} aria-label="Previous card" title="Previous (←)" className={navBtn}>
+            <Button variant="outline" size="icon-lg" onClick={prev} disabled={safeIndex === 0} aria-label="Previous card" title="Previous (←)">
               <Icon name="left" />
-            </button>
+            </Button>
             <span className="min-w-14 text-center text-sm font-semibold tabular-nums">
               {safeIndex + 1} / {deck.length}
             </span>
-            <button
+            <Button
+              variant="outline"
+              size="icon-lg"
               onClick={next}
               disabled={compact && safeIndex === deck.length - 1}
               aria-label="Next card"
               title="Next (→)"
-              className={navBtn}
             >
               <Icon name="right" />
-            </button>
+            </Button>
           </div>
         )}
 
-        <div className="relative flex justify-end gap-1">
-          <IconButton label="Keyboard shortcuts (?)" onClick={() => setShowKeys((s) => !s)} className={showKeys ? "bg-surface-2 text-ink" : ""}>
-            <Icon name="help" />
-          </IconButton>
-          <button onClick={toggleFullscreen} className={toolBtn(false)} title="Fullscreen (F)">
-            <Icon name="expand" className="size-4" />
-            <span className="hidden sm:inline">{compact ? "Expand" : "Fullscreen"}</span>
-          </button>
-          {showKeys && (
-            <div className="absolute bottom-12 right-0 z-30 w-72 rounded-lg border border-line bg-surface p-4 text-left shadow-lg">
-              <div className="mb-2 text-sm font-semibold">Keyboard shortcuts</div>
-              <ul className="space-y-1.5 text-sm text-muted">
+        <div className="flex justify-end gap-1">
+          <Popover open={showKeys} onOpenChange={setShowKeys}>
+            <PopoverTrigger asChild>
+              <IconButton label="Keyboard shortcuts (?)" size="icon-sm" className="text-muted-foreground">
+                <Icon name="help" className="size-4" />
+              </IconButton>
+            </PopoverTrigger>
+            <PopoverContent align="end" side="top" className="w-72">
+              <div className="mb-2 text-sm font-bold">Keyboard shortcuts</div>
+              <ul className="space-y-1.5 text-sm text-muted-foreground">
                 {SHORTCUTS.map(([keys, desc]) => (
                   <li key={desc} className="flex items-center gap-3">
                     <span className="flex w-14 shrink-0 gap-1">
@@ -347,20 +350,25 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
                   </li>
                 ))}
               </ul>
-            </div>
-          )}
+            </PopoverContent>
+          </Popover>
+          <Button variant="ghost" size="sm" onClick={toggleFullscreen} title="Fullscreen (F)">
+            <Icon name="expand" className="size-4" />
+            <span className="hidden sm:inline">{compact ? "Expand" : "Fullscreen"}</span>
+          </Button>
         </div>
       </div>
 
       {!compact && (
-        <div className="mx-auto mt-4 h-0.5 max-w-xs overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
-          <div className="h-full bg-muted/40 transition-all" style={{ width: `${((safeIndex + 1) / deck.length) * 100}%` }} />
+        <div className="mx-auto mt-4 h-1 max-w-xs overflow-hidden rounded-sm bg-muted" aria-hidden="true">
+          <div className="h-full bg-primary transition-all" style={{ width: `${((safeIndex + 1) / deck.length) * 100}%` }} />
         </div>
       )}
 
       {!compact && showSettings && (
-        <div className="mt-6 grid gap-4 rounded-xl border border-line bg-surface p-5 sm:grid-cols-3">
+        <div className="mt-6 grid gap-5 rounded-md border bg-card p-5 sm:grid-cols-3">
           <Toggle
+            id="fc-tracking"
             label="Track progress"
             hint="Sort cards into Know / Still learning"
             checked={tracking}
@@ -370,6 +378,7 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
             }}
           />
           <Toggle
+            id="fc-starred"
             label={`Starred only (${starredCount})`}
             hint="Study just the cards you starred"
             checked={starredOnly}
@@ -381,21 +390,23 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
           />
           <div>
             <div className="text-sm font-semibold">Front of card</div>
-            <div className="mt-2 inline-flex rounded-lg bg-surface-2 p-1 text-sm font-semibold">
-              {(["term", "definition"] as const).map((s) => (
-                <button
-                  key={s}
-                  aria-pressed={front === s}
-                  onClick={() => {
-                    setFront(s);
-                    setFlipped(false);
-                  }}
-                  className={`rounded-md px-3 py-1 capitalize ${front === s ? "bg-surface shadow-sm" : "text-muted"}`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              size="sm"
+              spacing={0}
+              value={front}
+              onValueChange={(v) => {
+                if (!v) return;
+                setFront(v as Side);
+                setFlipped(false);
+              }}
+              aria-label="Front of card"
+              className="mt-2"
+            >
+              <ToggleGroupItem value="term">Term</ToggleGroupItem>
+              <ToggleGroupItem value="definition">Definition</ToggleGroupItem>
+            </ToggleGroup>
           </div>
         </div>
       )}
@@ -404,12 +415,14 @@ export function FlashcardViewer({ set, compact = false }: { set: StudySet; compa
 }
 
 function Toggle({
+  id,
   label,
   hint,
   checked,
   disabled,
   onChange,
 }: {
+  id: string;
   label: string;
   hint: string;
   checked: boolean;
@@ -417,20 +430,12 @@ function Toggle({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className={`flex items-start justify-between gap-3 ${disabled ? "opacity-50" : "cursor-pointer"}`}>
-      <span>
-        <span className="block text-sm font-semibold">{label}</span>
-        <span className="block text-xs text-muted">{hint}</span>
-      </span>
-      <input
-        type="checkbox"
-        role="switch"
-        checked={checked}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.checked)}
-        className="peer sr-only"
-      />
-      <span className="relative mt-0.5 h-6 w-11 shrink-0 rounded-full bg-line transition-colors peer-checked:bg-accent peer-focus-visible:outline-2 peer-focus-visible:outline-accent after:absolute after:left-0.5 after:top-0.5 after:size-5 after:rounded-full after:bg-white after:transition-transform peer-checked:after:translate-x-5" />
-    </label>
+    <div className={`flex items-start justify-between gap-3 ${disabled ? "opacity-50" : ""}`}>
+      <Label htmlFor={id} className="flex flex-col items-start gap-0.5">
+        <span className="text-sm font-semibold">{label}</span>
+        <span className="text-xs font-normal text-muted-foreground">{hint}</span>
+      </Label>
+      <Switch id={id} checked={checked} disabled={disabled} onCheckedChange={onChange} className="mt-0.5" />
+    </div>
   );
 }

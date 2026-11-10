@@ -6,7 +6,11 @@ import type { AnswerWith, Card, MasteryCounts, MasteryLevel, StudySet } from "@/
 import { answerOf, checkAnswer, distractors, promptOf, shuffle, specialChars, type AnswerCheck } from "@/lib/utils";
 import { Confetti } from "./Confetti";
 import { ModeShell } from "./ModeShell";
-import { Button, ButtonLink, Icon, Kbd, MasteryBar } from "./ui";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ButtonLink, Eyebrow, Icon, Kbd, MasteryBar } from "./common";
 
 const ROUND_SIZE = 7;
 
@@ -162,21 +166,23 @@ export function Learn({ set }: { set: StudySet }) {
   });
 
   const toolbar = (
-    <label className="flex h-9 items-center gap-1 rounded-lg border border-line bg-surface pl-3 text-sm">
-      <span className="text-muted">Answer with:</span>
-    <select
+    <Select
       value={answerWith}
-      onChange={(e) => {
-        const aw = e.target.value as AnswerWith;
+      onValueChange={(v) => {
+        const aw = v as AnswerWith;
         setAnswerWith(aw);
         if (phase === "question") startRound(levels, aw);
       }}
-      className="h-full rounded-lg bg-transparent pr-2 font-semibold outline-none"
     >
-      <option value="definition">Definition</option>
-      <option value="term">Term</option>
-    </select>
-    </label>
+      <SelectTrigger size="sm" aria-label="Answer with" className="text-sm">
+        <span className="text-muted-foreground">Answer with:</span>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent align="end" position="popper">
+        <SelectItem value="definition">Definition</SelectItem>
+        <SelectItem value="term">Term</SelectItem>
+      </SelectContent>
+    </Select>
   );
 
   return (
@@ -185,15 +191,15 @@ export function Learn({ set }: { set: StudySet }) {
       <MasteryBar counts={counts} legend className="mb-6" />
 
       {phase === "complete" && (
-        <div className="rounded-xl border border-line bg-surface p-8 text-center sm:p-12">
-          <div className="mx-auto grid size-16 place-items-center rounded-full bg-good-soft text-good">
+        <div className="rounded-md border bg-card p-8 text-center sm:p-12">
+          <div className="mx-auto grid size-16 place-items-center rounded-md border border-good/30 bg-good-soft text-good">
             <Icon name="check" className="size-8" />
           </div>
           <h2 className="mt-5 text-3xl font-bold">You&apos;ve mastered all {cards.length} terms!</h2>
-          <p className="mt-2 text-muted">Lock it in with a practice test, or start over from scratch.</p>
+          <p className="mt-2 text-muted-foreground">Lock it in with a practice test, or start over from scratch.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <ButtonLink href={`/sets/${set.id}/test`}>Take a practice test</ButtonLink>
-            <Button variant="secondary" onClick={reset}>
+            <Button variant="outline" onClick={reset}>
               <Icon name="rotate" className="size-4" /> Reset progress
             </Button>
           </div>
@@ -201,11 +207,11 @@ export function Learn({ set }: { set: StudySet }) {
       )}
 
       {phase === "summary" && (
-        <div className="rounded-xl border border-line bg-surface p-6 sm:p-10">
+        <div className="rounded-md border bg-card p-6 sm:p-10">
           {round === 0 ? (
             <div className="text-center">
               <h2 className="text-3xl font-bold">Learn {set.title}</h2>
-              <p className="mx-auto mt-2 max-w-md text-muted">
+              <p className="mx-auto mt-2 max-w-md text-muted-foreground">
                 Work through rounds of {ROUND_SIZE} terms. Answer a multiple-choice question first, then type the answer from
                 memory to master it.
               </p>
@@ -214,7 +220,7 @@ export function Learn({ set }: { set: StudySet }) {
                   {counts.learning + counts.mastered > 0 ? "Continue learning" : "Start learning"}
                 </Button>
                 {counts.learning + counts.mastered > 0 && (
-                  <Button size="lg" variant="secondary" onClick={reset}>
+                  <Button size="lg" variant="outline" onClick={reset}>
                     Start over
                   </Button>
                 )}
@@ -222,26 +228,22 @@ export function Learn({ set }: { set: StudySet }) {
             </div>
           ) : (
             <>
-              <p className="text-sm font-semibold uppercase tracking-wider text-accent">Round {round} complete</p>
+              <Eyebrow className="text-brand">Round {round} complete</Eyebrow>
               <h2 className="mt-1 text-2xl font-bold">
                 {counts.mastered} of {cards.length} terms mastered
               </h2>
-              <ul className="mt-6 divide-y divide-line">
+              <ul className="mt-6 divide-y rounded-md border">
                 {roundIds.map((id) => {
                   const c = byId.get(id);
                   if (!c) return null;
                   const lv = levels[id] ?? 0;
                   return (
-                    <li key={id} className="flex items-center gap-4 py-3">
-                      <span
-                        className={`rounded-md px-2 py-0.5 text-xs font-semibold ${
-                          lv === 2 ? "bg-good-soft text-good" : lv === 1 ? "bg-warn-soft text-warn" : "bg-surface-2 text-muted"
-                        }`}
-                      >
+                    <li key={id} className="flex items-center gap-4 px-4 py-3">
+                      <Badge variant={lv === 2 ? "good" : lv === 1 ? "warn" : "secondary"} className="w-18">
                         {lv === 2 ? "Mastered" : lv === 1 ? "Learning" : "Not yet"}
-                      </span>
+                      </Badge>
                       <span className="min-w-0 flex-1 truncate font-medium">{c.term}</span>
-                      <span className="hidden min-w-0 flex-1 truncate text-muted sm:block">{c.definition}</span>
+                      <span className="hidden min-w-0 flex-1 truncate text-muted-foreground sm:block">{c.definition}</span>
                     </li>
                   );
                 })}
@@ -257,10 +259,10 @@ export function Learn({ set }: { set: StudySet }) {
       )}
 
       {phase === "question" && question && card && (
-        <div className="rounded-xl border border-line bg-surface p-6 sm:p-10">
-          <div className="flex items-center justify-between text-xs font-semibold text-muted">
-            <span className="uppercase tracking-wider">{answerWith === "definition" ? "Term" : "Definition"}</span>
-            <span>
+        <div className="rounded-md border bg-card p-6 sm:p-10">
+          <div className="flex items-center justify-between gap-3">
+            <Eyebrow>{answerWith === "definition" ? "Term" : "Definition"}</Eyebrow>
+            <span className="text-xs font-semibold text-muted-foreground tabular-nums">
               Round {round} · Question {Math.min(pos + 1, queue.length)} of {queue.length}
             </span>
           </div>
@@ -269,25 +271,25 @@ export function Learn({ set }: { set: StudySet }) {
           <div className="mt-6">
             {question.type === "mc" ? (
               <>
-                <p className="mb-3 text-sm font-semibold text-muted">
+                <p className="mb-3 text-sm font-semibold text-muted-foreground">
                   {feedback ? (feedback.correct ? "Nice work!" : "Not quite — you'll see this one again.") : "Choose the matching answer"}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {question.choices.map((choice, i) => {
                     const isAnswer = choice === answerOf(card, answerWith);
                     const isPicked = feedback?.given === choice;
-                    let style = "border-line hover:border-accent hover:bg-accent-soft/40";
+                    let style = "border-border bg-card hover:border-foreground/40 hover:bg-accent/40";
                     if (feedback && isAnswer) style = "border-good bg-good-soft";
                     else if (feedback && isPicked) style = "border-bad bg-bad-soft animate-shake";
-                    else if (feedback) style = "border-line opacity-50";
+                    else if (feedback) style = "border-border opacity-50";
                     return (
                       <button
                         key={choice + i}
                         disabled={!!feedback}
                         onClick={() => answer(choice)}
-                        className={`flex items-center gap-3 rounded-lg border-2 p-4 text-left font-medium transition-colors disabled:cursor-default ${style}`}
+                        className={`flex items-center gap-3 rounded-md border-[1.5px] p-4 text-left font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/60 disabled:cursor-default ${style}`}
                       >
-                        <span className="grid size-7 shrink-0 place-items-center rounded-md bg-surface-2 text-xs font-bold text-muted">
+                        <span className="grid size-7 shrink-0 place-items-center rounded-sm border bg-muted font-mono text-xs font-bold text-muted-foreground">
                           {feedback && isAnswer ? <Icon name="check" className="size-4 text-good" /> : feedback && isPicked ? <Icon name="x" className="size-4 text-bad" /> : i + 1}
                         </span>
                         <span className="whitespace-pre-wrap">{choice}</span>
@@ -311,8 +313,8 @@ export function Learn({ set }: { set: StudySet }) {
           </div>
 
           {feedback && !feedback.correct && (
-            <div className="mt-6 flex items-center justify-end gap-3 border-t border-line pt-5">
-              <span className="hidden items-center gap-1 text-xs text-muted sm:flex">
+            <div className="mt-6 flex items-center justify-end gap-3 border-t pt-5">
+              <span className="hidden items-center gap-1 text-xs text-muted-foreground sm:flex">
                 Press <Kbd>Enter ↵</Kbd> to continue
               </span>
               <Button onClick={continueAfterMiss}>Continue</Button>
@@ -359,11 +361,11 @@ function WrittenAnswer({
       <div className="space-y-3">
         {feedback.correct ? (
           <>
-            <div className="flex items-center gap-3 rounded-lg border-2 border-good bg-good-soft p-4 font-medium">
+            <div className="flex items-center gap-3 rounded-md border-[1.5px] border-good bg-good-soft p-4 font-medium">
               <Icon name="check" className="size-5 text-good" /> {feedback.given}
             </div>
             {(feedback.accentSlip || feedback.typo) && (
-              <p className="rounded-lg bg-warn-soft px-4 py-3 text-sm text-ink">
+              <p className="rounded-md border border-warn/30 bg-warn-soft px-4 py-3 text-sm">
                 <span className="font-semibold text-warn">{feedback.accentSlip ? "Correct. Watch the accents:" : "Almost. Check the spelling:"}</span>{" "}
                 <span className="font-semibold">{expected}</span>
               </p>
@@ -371,23 +373,23 @@ function WrittenAnswer({
           </>
         ) : (
           <>
-            <p className="text-sm font-semibold text-muted">
+            <p className="text-sm font-semibold text-muted-foreground">
               {feedback.given ? "Not quite — you'll see this one again." : "Skipped — here's the answer."}
             </p>
             {feedback.given && (
-              <div className="rounded-lg border-2 border-bad bg-bad-soft p-4">
+              <div className="rounded-md border-[1.5px] border-bad bg-bad-soft p-4">
                 <div className="text-xs font-semibold text-bad">Your answer</div>
                 <div className="mt-1 font-medium">{feedback.given}</div>
               </div>
             )}
-            <div className="rounded-lg border-2 border-good bg-good-soft p-4">
+            <div className="rounded-md border-[1.5px] border-good bg-good-soft p-4">
               <div className="text-xs font-semibold text-good">Correct answer</div>
               <div className="mt-1 font-medium whitespace-pre-wrap">{expected}</div>
             </div>
             {feedback.given && (
-              <button onClick={onOverride} className="text-sm font-semibold text-accent hover:underline">
+              <Button variant="link" size="sm" onClick={onOverride}>
                 Override: I was correct
-              </button>
+              </Button>
             )}
           </>
         )}
@@ -402,10 +404,10 @@ function WrittenAnswer({
         if (typed.trim()) onSubmit(typed);
       }}
     >
-      <label className="mb-2 block text-sm font-semibold text-muted" htmlFor="learn-answer">
+      <label className="mb-2 block text-sm font-semibold text-muted-foreground" htmlFor="learn-answer">
         Type the answer
       </label>
-      <input
+      <Input
         id="learn-answer"
         ref={inputRef}
         autoFocus
@@ -415,7 +417,7 @@ function WrittenAnswer({
         value={typed}
         onChange={(e) => setTyped(e.target.value)}
         placeholder="Type your answer"
-        className="w-full rounded-lg border-2 border-line bg-bg px-4 py-3.5 text-lg outline-none focus:border-accent"
+        className="h-13 bg-background px-4 text-lg md:text-lg"
       />
       {chars.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5" aria-label="Insert special character">
@@ -426,7 +428,7 @@ function WrittenAnswer({
               // Keep focus (and the caret) in the input.
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => insert(ch)}
-              className="grid h-8 min-w-8 place-items-center rounded-md border border-line bg-surface px-2 font-medium hover:border-accent hover:bg-accent-soft"
+              className="grid h-8 min-w-8 place-items-center rounded-sm border border-b-2 bg-card px-2 font-medium hover:border-foreground/40 hover:bg-accent"
             >
               {ch}
             </button>
@@ -434,7 +436,7 @@ function WrittenAnswer({
         </div>
       )}
       <div className="mt-4 flex items-center justify-end gap-3">
-        <span className="mr-auto hidden items-center gap-1 text-xs text-muted sm:flex">
+        <span className="mr-auto hidden items-center gap-1 text-xs text-muted-foreground sm:flex">
           Press <Kbd>Enter ↵</Kbd> to answer
         </span>
         <Button variant="ghost" onClick={() => onSubmit("")}>
