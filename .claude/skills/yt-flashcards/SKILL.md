@@ -27,9 +27,21 @@ Read every transcript fully, then write cards that capture what the videos actua
 - **Term** — short and specific: a concept, name, word, formula, or a question. **Definition** — one or two plain sentences, self-contained (no "as mentioned in the video").
 - Cover the key ideas, definitions, cause/effect, steps, and numbers worth remembering. Skip intros, sponsor reads, jokes, and calls to subscribe.
 - Default to roughly 10–30 cards depending on content density; follow any count the user gave. No duplicates across videos.
-- Language videos: term = target-language word/phrase, definition = meaning (plus brief usage note if useful).
+- Language videos: follow **Language sets** below instead of the Term/Definition rule above.
 - Auto-generated transcripts (`generated: true`) mangle names and jargon — fix obvious mis-hearings from context; leave out anything you can't resolve with confidence.
 - Stick to what the videos say. If something sounds wrong, leave it out or flag it to the user rather than silently "correcting" it.
+
+### Language sets (Language Transfer, lessons, any language course)
+
+The goal is practicing vocabulary and grammar by recall, not learning *about* the language. Learn and Test grade typed answers against the definition (ignoring case, punctuation and accents, allowing small typos, max ~40 chars), so every card must have an answer the user can type exactly.
+
+- **Term** = target-language word, phrase or sentence. **Definition** = its English meaning and nothing else: `rice`, `I go; I'm going`, `I want to see them`.
+- Separate alternative answers with `;` or ` / ` (each is accepted on its own). Optional memory hooks go in parentheses, which grading ignores: `to show (demostrar minus de-)`. Use them sparingly.
+- No explanations, usage notes, examples or "Ex:" in the definition. Keep each definition under ~40 characters.
+- No pronunciation, spelling or "how the language works" cards (e.g. "The letter H", "rolled r", "why the a?"). They can't be answered by typing. Instead, teach the rule with sentence cards that use it.
+- Most of the value is in **sentences built in the lesson**: when the teacher has the student build "I'm going to try to see them", make a card for it (`Voy a intentar verlos` → `I'm going to try to see them`). Aim for roughly half vocab, half sentences; cover each grammar pattern with 2–3 sentences.
+- Write the target language correctly (accents, ñ, ¿¡). Auto-transcripts mangle it; reconstruct from context only when you're confident.
+- Lean on standard forms the lesson teaches: infinitives (`mostrar` → `to show`), conjugated forms (`intento` → `I try; I'm trying`), pronouns attached (`verlos`).
 
 Title: concise topic name (not the raw video title unless it fits). Description: one line, ending with the source, e.g. `From "Video Title"` or `From 3 YouTube videos`.
 

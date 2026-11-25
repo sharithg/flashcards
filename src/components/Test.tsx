@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { recordStudy } from "@/lib/store";
 import type { AnswerWith, Card, StudySet } from "@/lib/types";
-import { answerOf, distractors, isCorrectAnswer, promptOf, sample, shuffle } from "@/lib/utils";
+import { answerOf, distractors, isCorrectAnswer, isTypeable, promptOf, sample, shuffle } from "@/lib/utils";
 import { ModeShell } from "./ModeShell";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -26,7 +26,9 @@ function buildTest(cards: Card[], cfg: Config): Question[] {
   const chosen = sample(cards, cfg.count);
   const types = shuffle(cfg.types);
   const qs: Question[] = chosen.map((card, i) => {
-    const type = types[i % types.length];
+    let type = types[i % types.length];
+    // Nobody can type a two-sentence answer from memory word for word; ask it as multiple choice instead.
+    if (type === "written" && !isTypeable(answerOf(card, cfg.answerWith)) && cards.length >= 2) type = "mc";
     if (type === "tf") {
       const wrong = distractors(cards, card, cfg.answerWith, 1)[0];
       const isTrue = !wrong || Math.random() < 0.5;

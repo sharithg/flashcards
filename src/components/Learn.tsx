@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { resetProgress, setMastery } from "@/lib/store";
 import type { AnswerWith, Card, MasteryCounts, MasteryLevel, StudySet } from "@/lib/types";
-import { answerOf, checkAnswer, distractors, promptOf, shuffle, specialChars, type AnswerCheck } from "@/lib/utils";
+import { answerOf, checkAnswer, distractors, isTypeable, promptOf, shuffle, specialChars, type AnswerCheck } from "@/lib/utils";
 import { Confetti } from "./Confetti";
 import { ModeShell } from "./ModeShell";
 import { Badge } from "@/components/ui/badge";
@@ -13,13 +13,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ButtonLink, Eyebrow, Icon, Kbd, MasteryBar } from "./common";
 
 const ROUND_SIZE = 7;
+// Self-graded ("recall") answers, passed through `answer()` like a typed one.
+const KNEW = "__knew__";
+const DIDNT = "__didnt__";
 
-type Question = { cardId: string; type: "mc" | "written"; choices: string[] };
+/** "recall" = self-graded: for answers too long to type from memory, reveal the answer and let the student say whether they knew it. */
+type Question = { cardId: string; type: "mc" | "written" | "recall"; choices: string[] };
 type Feedback = ({ given: string } & AnswerCheck) | null;
 type Levels = Record<string, MasteryLevel>;
 
 function makeQuestion(card: Card, cards: Card[], level: MasteryLevel, answerWith: AnswerWith): Question {
-  const type = level >= 1 || cards.length < 2 ? "written" : "mc";
+  const type = level >= 1 || cards.length < 2 ? (isTypeable(answerOf(card, answerWith)) ? "written" : "recall") : "mc";
   const choices = type === "mc" ? shuffle([answerOf(card, answerWith), ...distractors(cards, card, answerWith, 3)]) : [];
   return { cardId: card.id, type, choices };
 }
@@ -49,6 +53,7 @@ export function Learn({ set }: { set: StudySet }) {
   const [question, setQuestion] = useState<Question | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [typed, setTyped] = useState("");
+  const [revealed, setRevealed] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const advanceTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -79,6 +84,7 @@ export function Learn({ set }: { set: StudySet }) {
     setRound((r) => r + 1);
     setFeedback(null);
     setTyped("");
+    setRevealed(false);
     const first = byId.get(ids[0])!;
     setQuestion(makeQuestion(first, cards, lv[first.id] ?? 0, aw));
     setPhase("question");
@@ -88,6 +94,7 @@ export function Learn({ set }: { set: StudySet }) {
     const nextPos = fromPos + 1;
     setFeedback(null);
     setTyped("");
+    setRevealed(false);
     if (nextPos >= q.length) {
       setPhase("summary");
       setQuestion(null);
@@ -110,10 +117,21 @@ export function Learn({ set }: { set: StudySet }) {
     if (!question || !card || feedback) return;
     const expected = answerOf(card, answerWith);
     const check: AnswerCheck =
-      question.type === "mc" ? { correct: given === expected, accentSlip: false, typo: false } : checkAnswer(given, expected);
+      question.type === "mc"
+        ? { correct: given === expected, accentSlip: false, typo: false }
+        : question.type === "recall"
+          ? { correct: given === KNEW, accentSlip: false, typo: false }
+          : checkAnswer(given, expected);
     const correct = check.correct;
     const current = levels[card.id] ?? 0;
     const newLevel: MasteryLevel = correct ? (question.type === "mc" ? 1 : 2) : question.type === "mc" ? 0 : 1;
+    if (question.type === "recall") {
+      // The answer is already on screen, so there's nothing left to show: move straight on.
+      updateLevel(card.id, newLevel);
+      const q = correct ? queue : [...queue, card.id];
+      if (!correct) setQueue(q);
+      return advance(q, { ...levels, [card.id]: newLevel }, pos);
+    }
     const lv = updateLevel(card.id, Math.max(newLevel, correct ? current : 0) as MasteryLevel);
     setFeedback({ given, ...check });
     if (correct) {
@@ -149,13 +167,21 @@ export function Learn({ set }: { set: StudySet }) {
     startRound({});
   }
 
-  // Keyboard: 1-4 to pick an option, Enter to continue after a miss.
+  // Keyboard: 1-4 to pick an option, Enter to continue after a miss; Enter to reveal and 1/2 to self-grade a recall question.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (phase !== "question" || !question) return;
       if (feedback && !feedback.correct && e.key === "Enter" && !(e.target as HTMLElement).closest("input")) {
         e.preventDefault();
         continueAfterMiss();
+      } else if (!feedback && question.type === "recall" && !(e.target as HTMLElement).closest("input")) {
+        // Enter on a focused button already clicks it; don't handle it twice.
+        if (!revealed && e.key === "Enter" && !(e.target as HTMLElement).closest("button")) {
+          e.preventDefault();
+          setRevealed(true);
+        } else if (revealed && (e.key === "1" || e.key === "2")) {
+          answer(e.key === "2" ? KNEW : DIDNT);
+        }
       } else if (!feedback && question.type === "mc") {
         const n = Number(e.key);
         if (n >= 1 && n <= question.choices.length) answer(question.choices[n - 1]);
@@ -298,6 +324,13 @@ export function Learn({ set }: { set: StudySet }) {
                   })}
                 </div>
               </>
+            ) : question.type === "recall" ? (
+              <RecallAnswer
+                expected={answerOf(card, answerWith)}
+                revealed={revealed}
+                onReveal={() => setRevealed(true)}
+                onGrade={(knew) => answer(knew ? KNEW : DIDNT)}
+              />
             ) : (
               <WrittenAnswer
                 key={question.cardId + pos}
@@ -447,5 +480,50 @@ function WrittenAnswer({
         </Button>
       </div>
     </form>
+  );
+}
+
+function RecallAnswer({
+  expected,
+  revealed,
+  onReveal,
+  onGrade,
+}: {
+  expected: string;
+  revealed: boolean;
+  onReveal: () => void;
+  onGrade: (knew: boolean) => void;
+}) {
+  if (!revealed) {
+    return (
+      <div>
+        <p className="text-sm font-semibold text-muted-foreground">This answer is too long to type. Say it to yourself, then check.</p>
+        <div className="mt-4 flex items-center justify-end gap-3">
+          <span className="mr-auto hidden items-center gap-1 text-xs text-muted-foreground sm:flex">
+            Press <Kbd>Enter ↵</Kbd> to reveal
+          </span>
+          <Button autoFocus onClick={onReveal}>
+            Show answer
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      <div className="rounded-md border-[1.5px] p-4">
+        <div className="text-xs font-semibold text-muted-foreground">Answer</div>
+        <div className="mt-1 font-medium whitespace-pre-wrap">{expected}</div>
+      </div>
+      <p className="text-sm font-semibold text-muted-foreground">Did you know it?</p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Button variant="outline" size="lg" onClick={() => onGrade(false)}>
+          <Kbd>1</Kbd> Not yet
+        </Button>
+        <Button size="lg" onClick={() => onGrade(true)}>
+          <Kbd>2</Kbd> I knew it
+        </Button>
+      </div>
+    </div>
   );
 }
