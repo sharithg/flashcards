@@ -6,8 +6,10 @@ import {
   ChevronUp,
   CircleHelp,
   ClipboardCheck,
+  Copy,
   Ellipsis,
   GraduationCap,
+  MessageCircle,
   Layers,
   Maximize2,
   Pencil,
@@ -135,6 +137,8 @@ const ICONS = {
   pin: Pin,
   help: CircleHelp,
   settings: SlidersHorizontal,
+  copy: Copy,
+  chat: MessageCircle,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
