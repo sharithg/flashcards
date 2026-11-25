@@ -35,7 +35,7 @@ pnpm db:seed <user_id> # optional: add the two sample sets to a user's library (
 pnpm dev              # http://localhost:3000
 ```
 
-Other scripts: `pnpm db:claim <user_id>` (give data from before accounts existed, owner `unclaimed`, to a user; Clerk user ids are in the Clerk Dashboard under Users), `pnpm build`, `pnpm lint`, `pnpm db:generate` (create a migration after editing `src/db/schema.ts`), `pnpm db:studio` (browse the data), `pnpm db:down` (stop Postgres; data stays in the `pgdata` volume).
+Other scripts: `pnpm db:claim <user_id>` (give data from before accounts existed, owner `unclaimed`, to a user; Clerk user ids are in the Clerk Dashboard under Users), `pnpm repaso <cmd>` (CLI for your sets: `login`, `whoami`, `sets list/show/create/delete`; see `cli/repaso.ts`), `uv run scripts/yt-transcript.py <url…>` (print YouTube transcripts; `--json`, `--lang`, `--timestamps`; used by the `/yt-flashcards` Claude skill), `pnpm build`, `pnpm lint`, `pnpm db:generate` (create a migration after editing `src/db/schema.ts`), `pnpm db:studio` (browse the data), `pnpm db:down` (stop Postgres; data stays in the `pgdata` volume).
 
 ## Deployment
 
