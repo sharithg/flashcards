@@ -122,12 +122,14 @@ async function login() {
         return;
       }
       const k = url.searchParams.get("key");
+      const error = url.searchParams.get("error");
+      const reason = error === "denied" || !error ? "Login was cancelled in the browser." : error;
       res
-        .writeHead(k ? 200 : 400, { "Content-Type": "text/html", "Cache-Control": "no-store" })
-        .end(page(k ? "Logged in. You can close this tab and return to the terminal." : "Login cancelled."));
+        .writeHead(k ? 200 : 400, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" })
+        .end(page(k ? "Logged in. You can close this tab and return to the terminal." : "Login failed. Check the terminal for details."));
       server.close();
       if (k) settle.resolve(k);
-      else settle.reject(new CliError("Login was cancelled in the browser."));
+      else settle.reject(new CliError(reason));
     });
     const timer = setTimeout(() => {
       server.close();
