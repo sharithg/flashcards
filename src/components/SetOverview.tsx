@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteSet, toggleStar, useHydrated } from "@/lib/store";
 import type { StudySet } from "@/lib/types";
+import { speakingPrompt } from "@/lib/speaking-prompt";
 import { masteryCounts, pluralize, relativeTime } from "@/lib/utils";
 import { FlashcardViewer } from "./FlashcardViewer";
 import { MODES, type ModeSlug } from "./ModeShell";
@@ -26,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button } from "@/components/ui/button";
 import { ButtonLink, Icon, IconButton, MasteryBar, MasteryLegend } from "./common";
 
 const MODE_STYLE: Record<ModeSlug, { icon: string; hint: string }> = {
@@ -34,6 +36,36 @@ const MODE_STYLE: Record<ModeSlug, { icon: string; hint: string }> = {
   test: { icon: "bg-blue-soft text-blue", hint: "Check what you know" },
   match: { icon: "bg-rose-soft text-rose", hint: "Race the clock" },
 };
+
+function CopyPromptButton({ set }: { set: StudySet }) {
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(speakingPrompt(set));
+      setState("copied");
+    } catch {
+      setState("failed");
+    }
+    setTimeout(() => setState("idle"), 2000);
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={copy}
+      disabled={set.cards.length === 0}
+      title="Copy a prompt to practice speaking these terms with ChatGPT"
+      aria-label="Copy speaking practice prompt"
+    >
+      <Icon name={state === "copied" ? "check" : "chat"} className="size-4" />
+      <span aria-live="polite" className="max-sm:sr-only">
+        {state === "copied" ? "Copied!" : state === "failed" ? "Copy failed" : "Speaking prompt"}
+      </span>
+    </Button>
+  );
+}
 
 function MoreMenu({ set }: { set: StudySet }) {
   const router = useRouter();
@@ -105,6 +137,7 @@ export function SetOverview({ set }: { set: StudySet }) {
           {set.description && <p className="mt-2 text-muted-foreground">{set.description}</p>}
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          <CopyPromptButton set={set} />
           <ButtonLink href={`/sets/${set.id}/edit`} variant="outline" size="sm">
             <Icon name="edit" className="size-4" /> Edit
           </ButtonLink>
