@@ -41,6 +41,11 @@ function normalize(s: string): string {
     .trim();
 }
 
+/** Like `normalize`, but keeps accents (for telling "manana" apart from "mañana"). */
+function normalizeKeepAccents(s: string): string {
+  return s.normalize("NFC").toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, " ").trim();
+}
+
 function levenshtein(a: string, b: string): number {
   const dp = Array.from({ length: b.length + 1 }, (_, i) => i);
   for (let i = 1; i <= a.length; i++) {
@@ -63,16 +68,65 @@ export type AnswerCheck = {
   typo: boolean;
 };
 
-/** Lenient answer check: ignores case, punctuation and accents, and allows a small typo on longer answers. */
+/** Lead-ins that introduce a meaning rather than being part of it, e.g. "also used to mean 'let's go'". */
+const FILLER = /^(?:also |or |ie |eg |lit |literally |used to mean |used as |means |meaning )+/;
+/** Articles and the infinitive "to", so "go" matches "to go" and "house" matches "a house". */
+const ARTICLE = /^(?:to |a |an |the )/;
+
+/**
+ * Every answer a student could reasonably type for `expected`: the whole thing, plus each meaning
+ * when it lists several ("we're going; let's go", "big / large", "big, large"), plus any quoted
+ * phrase ("also used to mean 'let's go'"). Parentheticals like "(informal)" are dropped.
+ */
+export function answerVariants(expected: string, norm: (s: string) => string = normalize): string[] {
+  const out = new Set<string>();
+  const add = (s: string) => {
+    const n = norm(s).replace(FILLER, "");
+    if (n) out.add(n);
+  };
+  add(expected);
+  // Quoted phrases: the quote must open after a space/start and close before a space/punctuation/end,
+  // so apostrophes inside words ("we're", "let's") aren't mistaken for quotes.
+  for (const m of expected.matchAll(/(?:^|[\s(])['"‘“]([^"“”]+?)['"’”](?=$|[\s.,;:!?)])/g)) add(m[1]);
+  const bare = expected.replace(/\([^)]*\)/g, " ");
+  add(bare);
+  for (const part of bare.split(/[;/]|\s+or\s+/i)) {
+    add(part);
+    // Commas separate meanings only in short lists ("big, large"), not in a sentence.
+    const pieces = part.split(",");
+    if (pieces.length > 1 && pieces.every((p) => p.trim().split(/\s+/).length <= 3)) pieces.forEach(add);
+  }
+  return [...out];
+}
+
+/** Longest answer we expect anyone to type from memory; longer answers get self-graded or multiple choice. */
+const MAX_TYPED = 40;
+
+/** Whether at least one acceptable answer is short enough to type. */
+export function isTypeable(expected: string): boolean {
+  return answerVariants(expected).some((v) => v.length <= MAX_TYPED);
+}
+
+/**
+ * Lenient answer check: ignores case, punctuation and accents, accepts any one of several listed
+ * meanings (see `answerVariants`), and allows a small typo on longer answers.
+ */
 export function checkAnswer(given: string, expected: string): AnswerCheck {
-  const g = normalize(given);
-  const e = normalize(expected);
   const no = { correct: false, accentSlip: false, typo: false };
+  const g = normalize(given).replace(ARTICLE, "");
   if (!g) return no;
-  const strict = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, " ").trim();
-  if (g === e) return { correct: true, accentSlip: strict(given) !== strict(expected), typo: false };
-  const tolerance = e.length >= 8 ? 2 : e.length >= 4 ? 1 : 0;
-  return levenshtein(g, e) <= tolerance ? { correct: true, accentSlip: false, typo: true } : no;
+  const variants = answerVariants(expected).map((v) => v.replace(ARTICLE, ""));
+  if (variants.includes(g)) {
+    // Matched once accents are ignored; it's an accent slip unless it also matches with them.
+    const strict = (s: string) => normalizeKeepAccents(s).replace(ARTICLE, "");
+    const accentSlip = !answerVariants(expected, normalizeKeepAccents).some((v) => v.replace(ARTICLE, "") === strict(given));
+    return { correct: true, accentSlip, typo: false };
+  }
+  for (const e of variants) {
+    const tolerance = e.length >= 8 ? 2 : e.length >= 4 ? 1 : 0;
+    if (tolerance && levenshtein(g, e) <= tolerance) return { correct: true, accentSlip: false, typo: true };
+  }
+  return no;
 }
 
 export function isCorrectAnswer(given: string, expected: string): boolean {
