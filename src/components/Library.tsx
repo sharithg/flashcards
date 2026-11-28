@@ -1,17 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Flame, Sparkles } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { togglePin, useHydrated, useSets, useStudyDays } from "@/lib/store";
 import type { StudySet } from "@/lib/types";
+import { compareByTags, compareTags, sameTag } from "@/lib/tags";
 import { masteryCounts, pluralize, relativeTime, streakFrom } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ButtonLink, Icon, IconButton, MasteryBar } from "./common";
+import { TagList } from "./TagInput";
 
-type Sort = "recent" | "alpha" | "least";
+type Sort = "recent" | "alpha" | "tags" | "least";
 
 const SORTS: Record<Sort, { label: string; fn: (a: StudySet, b: StudySet) => number }> = {
   recent: {
@@ -19,6 +22,8 @@ const SORTS: Record<Sort, { label: string; fn: (a: StudySet, b: StudySet) => num
     fn: (a, b) => (b.lastStudiedAt ?? b.updatedAt) - (a.lastStudiedAt ?? a.updatedAt),
   },
   alpha: { label: "A–Z", fn: (a, b) => a.title.localeCompare(b.title) },
+  // Groups sets by course tag, then natural order ("LT Track 5" before "LT Track 10").
+  tags: { label: "Tags", fn: (a, b) => compareByTags(a.tags, b.tags) || a.title.localeCompare(b.title) },
   least: {
     label: "Least mastered",
     fn: (a, b) => masteryCounts(a).mastered / (a.cards.length || 1) - masteryCounts(b).mastered / (b.cards.length || 1),
@@ -38,14 +43,33 @@ export function Library() {
   const hydrated = useHydrated();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("recent");
+  const params = useSearchParams();
+  const activeTag = params.get("tag");
+
+  // The tag filter lives in the URL (?tag=…) so set pages can link to it and it survives a reload.
+  function selectTag(tag: string | null) {
+    const next = new URLSearchParams(params.toString());
+    if (tag) next.set("tag", tag);
+    else next.delete("tag");
+    window.history.replaceState(null, "", next.size ? `?${next}` : window.location.pathname);
+  }
+
+  const tagCounts = new Map<string, { tag: string; n: number }>();
+  for (const t of (sets ?? []).flatMap((s) => s.tags)) {
+    const k = t.toLowerCase();
+    tagCounts.set(k, { tag: tagCounts.get(k)?.tag ?? t, n: (tagCounts.get(k)?.n ?? 0) + 1 });
+  }
+  const allTags = [...tagCounts.values()].sort((a, b) => compareTags(a.tag, b.tag));
 
   const q = query.trim().toLowerCase();
   const filtered = (sets ?? [])
+    .filter((s) => !activeTag || s.tags.some((t) => sameTag(t, activeTag)))
     .filter(
       (s) =>
         !q ||
         s.title.toLowerCase().includes(q) ||
         s.description.toLowerCase().includes(q) ||
+        s.tags.some((t) => t.toLowerCase().includes(q)) ||
         s.cards.some((c) => c.term.toLowerCase().includes(q) || c.definition.toLowerCase().includes(q)),
     )
     .sort((a, b) => Number(!!b.pinned) - Number(!!a.pinned) || SORTS[sort].fn(a, b));
@@ -103,6 +127,28 @@ export function Library() {
         </Select>
       </div>
 
+      {(allTags.length > 0 || activeTag) && (
+        <div className="mt-3 flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter by tag">
+          <Icon name="tag" className="mr-0.5 size-4 text-muted-foreground" />
+          {activeTag && !tagCounts.has(activeTag.toLowerCase()) && (
+            <TagChip label={activeTag} count={0} on onClick={() => selectTag(null)} />
+          )}
+          {allTags.map(({ tag, n }) => {
+            const on = !!activeTag && sameTag(activeTag, tag);
+            return <TagChip key={tag} label={tag} count={n} on={on} onClick={() => selectTag(on ? null : tag)} />;
+          })}
+          {activeTag && (
+            <button
+              type="button"
+              onClick={() => selectTag(null)}
+              className="ml-1 text-xs font-semibold text-muted-foreground underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring/60"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      )}
+
       {sets === null ? (
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {[0, 1].map((i) => (
@@ -121,11 +167,15 @@ export function Library() {
           </ButtonLink>
         </div>
       ) : filtered.length === 0 ? (
-        <p className="mt-10 text-center text-muted-foreground">No sets match &ldquo;{query}&rdquo;.</p>
+        <p className="mt-10 text-center text-muted-foreground">
+          No sets {activeTag && <>tagged &ldquo;{activeTag}&rdquo;</>}
+          {activeTag && q && " and "}
+          {q && <>match &ldquo;{query}&rdquo;</>}.
+        </p>
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {filtered.map((s) => (
-            <SetCard key={s.id} set={s} />
+            <SetCard key={s.id} set={s} activeTag={activeTag} />
           ))}
           <Link
             href="/create?import"
@@ -141,6 +191,22 @@ export function Library() {
   );
 }
 
+function TagChip({ label, count, on, onClick }: { label: string; count: number; on: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={on}
+      className={`inline-flex h-7 items-center gap-1.5 rounded-md border px-2.5 text-sm font-semibold transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/60 ${
+        on ? "border-primary-edge bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:border-foreground/40 hover:text-foreground"
+      }`}
+    >
+      {label}
+      <span className={`text-xs ${on ? "opacity-80" : "opacity-60"}`}>{count}</span>
+    </button>
+  );
+}
+
 function StatTile({ icon, tone, title, hint }: { icon: ReactNode; tone: string; title: string; hint: string }) {
   return (
     <div className="flex items-center gap-3 rounded-md border bg-card px-4 py-3">
@@ -153,7 +219,7 @@ function StatTile({ icon, tone, title, hint }: { icon: ReactNode; tone: string; 
   );
 }
 
-function SetCard({ set }: { set: StudySet }) {
+function SetCard({ set, activeTag }: { set: StudySet; activeTag: string | null }) {
   const hydrated = useHydrated();
   const counts = masteryCounts(set);
   const action = nextAction(set);
@@ -186,6 +252,7 @@ function SetCard({ set }: { set: StudySet }) {
         </IconButton>
       </div>
       {set.description && <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{set.description}</p>}
+      <TagList tags={set.tags} active={activeTag} hrefFor={(t) => `/?tag=${encodeURIComponent(t)}`} className="mt-3" />
       <div className="mt-auto pt-5">
         <MasteryBar counts={counts} legend />
         <Link

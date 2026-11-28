@@ -158,6 +158,7 @@ export function saveSet(set: StudySet) {
         id: set.id,
         title: set.title,
         description: set.description,
+        tags: set.tags,
         createdAt: set.createdAt,
         cards: set.cards.map((c) => ({ id: c.id, term: c.term, definition: c.definition, starred: !!c.starred })),
       }),

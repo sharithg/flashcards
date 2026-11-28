@@ -12,6 +12,7 @@ export type StudySet = {
   id: string;
   title: string;
   description: string;
+  tags: string[];
   cards: Card[];
   createdAt: number;
   updatedAt: number;

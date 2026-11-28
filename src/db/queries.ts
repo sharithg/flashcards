@@ -35,6 +35,7 @@ export async function getLibraryData(userId: string): Promise<LibraryData> {
       id: s.id,
       title: s.title,
       description: s.description,
+      tags: s.tags,
       cards: [],
       progress: {},
       pinned: s.pinned,

@@ -13,6 +13,8 @@ export const studySets = pgTable(
     userId: text("user_id").notNull(),
     title: text("title").notNull(),
     description: text("description").notNull().default(""),
+    /** Free-form labels for filtering and sorting, e.g. a course or source ("Language Transfer", "LT Track 8"). */
+    tags: text("tags").array().notNull().default(sql`'{}'::text[]`),
     pinned: boolean("pinned").notNull().default(false),
     bestMatchTimeMs: integer("best_match_time_ms"),
     lastStudiedAt: timestamp("last_studied_at", { withTimezone: true }),

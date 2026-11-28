@@ -21,6 +21,7 @@ import {
   Shuffle,
   SlidersHorizontal,
   Star,
+  Tag,
   Trash2,
   X,
   type LucideIcon,
@@ -139,6 +140,7 @@ const ICONS = {
   settings: SlidersHorizontal,
   copy: Copy,
   chat: MessageCircle,
+  tag: Tag,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
