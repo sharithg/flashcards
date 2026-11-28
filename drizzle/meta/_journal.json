@@ -15,6 +15,13 @@
       "when": 1794246174367,
       "tag": "0001_user_ownership",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795847899810,
+      "tag": "0002_set_tags",
+      "breakpoints": true
     }
   ]
 }

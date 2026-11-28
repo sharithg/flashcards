@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { cardProgress, cards, studyDays, studySets } from "@/db/schema";
 import { requireUserId } from "./auth";
+import { tagsInput } from "./tags";
 
 /*
  * Mutations, each scoped to the signed-in Clerk user. Sets are owned directly (study_sets.user_id);
@@ -22,6 +23,7 @@ const setInput = z.object({
   id,
   title: z.string().trim().min(1).max(200),
   description: z.string().max(2000),
+  tags: tagsInput.default([]),
   cards: z
     .array(
       z.object({
@@ -57,10 +59,17 @@ export async function saveSetAction(input: z.input<typeof setInput>) {
 
     await tx
       .insert(studySets)
-      .values({ id: set.id, userId, title: set.title, description: set.description, createdAt: new Date(set.createdAt) })
+      .values({
+        id: set.id,
+        userId,
+        title: set.title,
+        description: set.description,
+        tags: set.tags,
+        createdAt: new Date(set.createdAt),
+      })
       .onConflictDoUpdate({
         target: studySets.id,
-        set: { title: set.title, description: set.description, updatedAt: sql`now()` },
+        set: { title: set.title, description: set.description, tags: set.tags, updatedAt: sql`now()` },
         setWhere: eq(studySets.userId, userId),
       });
 

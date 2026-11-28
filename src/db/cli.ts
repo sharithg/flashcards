@@ -1,7 +1,8 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { and, asc, count, desc, eq } from "drizzle-orm";
+import { and, asc, count, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
+import { tagsInput } from "@/lib/tags";
 import { db } from "./index";
 import { cards, studySets } from "./schema";
 
@@ -10,11 +11,23 @@ import { cards, studySets } from "./schema";
 export const newSetInput = z.object({
   title: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000).default(""),
+  tags: tagsInput.default([]),
   cards: z
     .array(z.object({ term: z.string().trim().min(1).max(2000), definition: z.string().trim().min(1).max(5000) }))
     .min(1)
     .max(2000),
 });
+
+/** Fields `repaso sets update` can change; omitted ones are left alone. */
+export const setPatchInput = z
+  .object({
+    title: z.string().trim().min(1).max(200),
+    description: z.string().trim().max(2000),
+    tags: tagsInput,
+  })
+  .partial()
+  .strict()
+  .refine((p) => Object.keys(p).length > 0, "Nothing to update");
 
 export async function listSets(userId: string) {
   return db
@@ -22,6 +35,7 @@ export async function listSets(userId: string) {
       id: studySets.id,
       title: studySets.title,
       description: studySets.description,
+      tags: studySets.tags,
       cardCount: count(cards.id),
       pinned: studySets.pinned,
       updatedAt: studySets.updatedAt,
@@ -39,6 +53,7 @@ export async function getSet(userId: string, setId: string) {
       id: studySets.id,
       title: studySets.title,
       description: studySets.description,
+      tags: studySets.tags,
       pinned: studySets.pinned,
       createdAt: studySets.createdAt,
       updatedAt: studySets.updatedAt,
@@ -57,7 +72,7 @@ export async function getSet(userId: string, setId: string) {
 export async function createSet(userId: string, input: z.output<typeof newSetInput>) {
   const id = randomUUID();
   await db.transaction(async (tx) => {
-    await tx.insert(studySets).values({ id, userId, title: input.title, description: input.description });
+    await tx.insert(studySets).values({ id, userId, title: input.title, description: input.description, tags: input.tags });
     await tx
       .insert(cards)
       .values(
@@ -65,6 +80,16 @@ export async function createSet(userId: string, input: z.output<typeof newSetInp
       );
   });
   return id;
+}
+
+/** True if the set existed and belonged to the caller. */
+export async function updateSet(userId: string, setId: string, patch: z.output<typeof setPatchInput>) {
+  const updated = await db
+    .update(studySets)
+    .set({ ...patch, updatedAt: sql`now()` })
+    .where(and(eq(studySets.id, setId), eq(studySets.userId, userId)))
+    .returning({ id: studySets.id });
+  return updated.length > 0;
 }
 
 /** True if the set existed and belonged to the caller. */

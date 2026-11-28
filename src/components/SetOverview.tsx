@@ -8,6 +8,7 @@ import type { StudySet } from "@/lib/types";
 import { speakingPrompt } from "@/lib/speaking-prompt";
 import { masteryCounts, pluralize, relativeTime } from "@/lib/utils";
 import { FlashcardViewer } from "./FlashcardViewer";
+import { TagList } from "./TagInput";
 import { MODES, type ModeSlug } from "./ModeShell";
 import {
   AlertDialog,
@@ -135,6 +136,7 @@ export function SetOverview({ set }: { set: StudySet }) {
         <div className="min-w-0">
           <h1 className="text-3xl font-bold sm:text-4xl">{set.title}</h1>
           {set.description && <p className="mt-2 text-muted-foreground">{set.description}</p>}
+          <TagList tags={set.tags} hrefFor={(t) => `/?tag=${encodeURIComponent(t)}`} className="mt-3" />
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <CopyPromptButton set={set} />

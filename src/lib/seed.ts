@@ -11,6 +11,7 @@ export const SEED_SETS: StudySet[] = [
     id: "spanish-basics",
     title: "Spanish: Everyday Basics",
     description: "Common words and phrases for getting around.",
+    tags: [],
     createdAt: t,
     updatedAt: t,
     cards: cards("es", [
@@ -30,6 +31,7 @@ export const SEED_SETS: StudySet[] = [
     id: "cell-biology",
     title: "Cell Biology",
     description: "Organelles and what they do.",
+    tags: [],
     createdAt: t + 1,
     updatedAt: t + 1,
     cards: cards("bio", [

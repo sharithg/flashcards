@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { saveSet } from "@/lib/store";
+import { saveSet, useSets } from "@/lib/store";
 import type { Card, StudySet } from "@/lib/types";
 import { uid } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Eyebrow, Icon, IconButton } from "./common";
+import { TagInput } from "./TagInput";
 
 const blank = (id: string = uid()): Card => ({ id, term: "", definition: "" });
 
@@ -34,6 +35,8 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
   const router = useRouter();
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
+  const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
+  const knownTags = (useSets() ?? []).flatMap((s) => s.tags);
   const [cards, setCards] = useState<Card[]>(() => (initial?.cards.length ? initial.cards : [blank("new-1"), blank("new-2"), blank("new-3")]));
   const [error, setError] = useState("");
   const [focusId, setFocusId] = useState<string | null>(null);
@@ -102,6 +105,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
       id,
       title: title.trim(),
       description: description.trim(),
+      tags,
       cards: filled,
       createdAt: initial?.createdAt ?? now,
       updatedAt: now,
@@ -165,6 +169,7 @@ export function SetEditor({ initial, startWithImport = false }: { initial?: Stud
           rows={2}
           className="resize-none px-4 py-3"
         />
+        <TagInput value={tags} onChange={setTags} suggestions={knownTags} />
       </div>
 
       <div className="mt-6 flex items-center justify-between">

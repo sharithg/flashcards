@@ -1,0 +1,1 @@
+ALTER TABLE "study_sets" ADD COLUMN "tags" text[] DEFAULT '{}'::text[] NOT NULL;

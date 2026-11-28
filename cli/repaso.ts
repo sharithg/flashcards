@@ -3,9 +3,10 @@
  *
  *   pnpm repaso login                 open the browser to authorize this machine
  *   pnpm repaso whoami
- *   pnpm repaso sets list
+ *   pnpm repaso sets list [--tag <tag>]
  *   pnpm repaso sets show <id>
  *   pnpm repaso sets create <file.json | ->
+ *   pnpm repaso sets update <id> [file.json | -] [--title …] [--description …] [--tag … ...]
  *   pnpm repaso sets delete <id> --yes
  *   pnpm repaso logout                revoke this machine's key
  *
@@ -27,7 +28,15 @@ const LOGIN_TIMEOUT_MS = 5 * 60_000;
 
 type HostAuth = { key: string; email: string | null };
 type Config = { hosts: Record<string, HostAuth> };
-type SetSummary = { id: string; title: string; description: string; cardCount: number; pinned: boolean; updatedAt: string };
+type SetSummary = {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  cardCount: number;
+  pinned: boolean;
+  updatedAt: string;
+};
 type FullSet = Omit<SetSummary, "cardCount"> & {
   createdAt: string;
   cards: { id: string; term: string; definition: string; starred: boolean }[];
@@ -40,6 +49,9 @@ const { values: flags, positionals } = parseArgs({
     json: { type: "boolean", default: false },
     yes: { type: "boolean", short: "y", default: false },
     help: { type: "boolean", short: "h", default: false },
+    title: { type: "string" },
+    description: { type: "string" },
+    tag: { type: "string", multiple: true },
   },
 });
 
@@ -182,12 +194,21 @@ async function whoami() {
   out({ api, ...me }, () => `${me.email ?? me.userId}${me.name ? ` (${me.name})` : ""} on ${api}`);
 }
 
+const tagList = (tags: string[]) => (tags.length ? `  [${tags.join(", ")}]` : "");
+
 async function setsList() {
-  const { sets } = await request<{ sets: SetSummary[] }>("GET", "/api/cli/sets");
+  const { sets: all } = await request<{ sets: SetSummary[] }>("GET", "/api/cli/sets");
+  // --tag filters to sets carrying every given tag (case-insensitive).
+  const want = (flags.tag ?? []).map((t) => t.trim().toLowerCase()).filter(Boolean);
+  const sets = all.filter((s) => want.every((w) => s.tags.some((t) => t.toLowerCase() === w)));
   out(sets, () =>
     sets.length
-      ? sets.map((s) => `${s.id}  ${s.pinned ? "★ " : ""}${s.title}  (${s.cardCount} cards, updated ${day(s.updatedAt)})`).join("\n")
-      : "No sets yet.",
+      ? sets
+          .map((s) => `${s.id}  ${s.pinned ? "★ " : ""}${s.title}  (${s.cardCount} cards, updated ${day(s.updatedAt)})${tagList(s.tags)}`)
+          .join("\n")
+      : want.length
+        ? "No sets with those tags."
+        : "No sets yet.",
   );
 }
 
@@ -195,7 +216,7 @@ async function setsShow(id: string) {
   const set = await request<FullSet>("GET", `/api/cli/sets/${encodeURIComponent(id)}`);
   out(set, () =>
     [
-      `${set.title}  (${set.cards.length} cards)`,
+      `${set.title}  (${set.cards.length} cards)${tagList(set.tags)}`,
       set.description,
       `${api}/sets/${set.id}`,
       "",
@@ -206,18 +227,33 @@ async function setsShow(id: string) {
   );
 }
 
-async function setsCreate(file: string) {
+async function readJson(file: string): Promise<unknown> {
   const raw = file === "-" ? await readStdin() : await readFile(file, "utf8").catch(() => {
     throw new CliError(`Can't read ${file}`);
   });
-  let body: unknown;
   try {
-    body = JSON.parse(raw);
+    return JSON.parse(raw);
   } catch {
     throw new CliError(`${file === "-" ? "stdin" : file} is not valid JSON`);
   }
+}
+
+async function setsCreate(file: string) {
+  const body = await readJson(file);
   const res = await request<{ id: string; url: string; cards: number }>("POST", "/api/cli/sets", body);
   out(res, () => `Created set with ${res.cards} cards: ${res.url}`);
+}
+
+async function setsUpdate(id: string, file: string | undefined) {
+  // Start from the JSON file (if any), then let flags override it. --tag replaces all tags.
+  const patch = (file ? await readJson(file) : {}) as Record<string, unknown>;
+  if (typeof patch !== "object" || patch === null || Array.isArray(patch)) throw new CliError("Update JSON must be an object");
+  if (flags.title !== undefined) patch.title = flags.title;
+  if (flags.description !== undefined) patch.description = flags.description;
+  if (flags.tag) patch.tags = flags.tag;
+  if (!Object.keys(patch).length) throw new CliError("Nothing to update. Pass --title, --description, --tag or a JSON file.");
+  const set = await request<FullSet>("PATCH", `/api/cli/sets/${encodeURIComponent(id)}`, patch);
+  out(set, () => `Updated ${set.title}${tagList(set.tags)}: ${api}/sets/${set.id}`);
 }
 
 async function setsDelete(id: string) {
@@ -237,9 +273,11 @@ const HELP = `Usage: repaso <command> [--api <url>] [--json]
   login                     authorize this machine in the browser
   logout                    revoke and forget this machine's key
   whoami                    show the logged-in account
-  sets list                 list your sets
+  sets list [--tag <t>]     list your sets (--tag, repeatable: only sets with all those tags)
   sets show <id>            print a set and its cards
-  sets create <file|->      create a set from JSON: {"title","description","cards":[{"term","definition"}]}
+  sets create <file|->      create a set from JSON: {"title","description","tags":[…],"cards":[{"term","definition"}]}
+  sets update <id> [file|-] change a set's title/description/tags from JSON {"title","description","tags"}
+                            or flags --title, --description, --tag (repeatable; replaces all tags)
   sets delete <id> --yes    delete a set
 
 API: ${api}`;
@@ -259,6 +297,7 @@ async function main() {
     if (sub === "list" || sub === "ls") return setsList();
     if (sub === "show") return setsShow(need(arg, "set id"));
     if (sub === "create") return setsCreate(need(arg, "JSON file (or - for stdin)"));
+    if (sub === "update") return setsUpdate(need(arg, "set id"), positionals[3]);
     if (sub === "delete" || sub === "rm") return setsDelete(need(arg, "set id"));
   }
   throw new CliError(`Unknown command: ${positionals.join(" ")}\n\n${HELP}`);

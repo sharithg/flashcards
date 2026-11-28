@@ -43,17 +43,23 @@ The goal is practicing vocabulary and grammar by recall, not learning *about* th
 - Write the target language correctly (accents, ñ, ¿¡). Auto-transcripts mangle it; reconstruct from context only when you're confident.
 - Lean on standard forms the lesson teaches: infinitives (`mostrar` → `to show`), conjugated forms (`intento` → `I try; I'm trying`), pronouns attached (`verlos`).
 
-Title: concise topic name (not the raw video title unless it fits). Description: one line, ending with the source, e.g. `From "Video Title"` or `From 3 YouTube videos`.
+Title: what the set teaches, never the course or video name. Language sets use `<Language>: <key words/topics>`, e.g. `Spanish: La, Quiere, Venir & Debo`. Description: one line, ending with the source, e.g. `From "Video Title"` or `From 3 YouTube videos`.
+
+Tags carry the source, so the library can filter and sort by it:
+
+- One tag for the course or channel, spelled the same way every time (`Language Transfer`). Check existing tags first with `pnpm -s repaso sets list --json` and reuse their exact spelling.
+- One tag per lesson/video number when the source is numbered: `LT Track 8`; a set made from tracks 5–7 gets `LT Track 5`, `LT Track 6`, `LT Track 7`. Tags sort naturally, so Track 10 comes after Track 9.
+- Unnumbered videos: a short tag for the channel or video series is enough. Max 20 tags, 40 chars each.
 
 Save to `$SCRATCH/set.json`:
 
 ```json
-{ "title": "…", "description": "…", "cards": [{ "term": "…", "definition": "…" }] }
+{ "title": "…", "description": "…", "tags": ["…"], "cards": [{ "term": "…", "definition": "…" }] }
 ```
 
 ## 3. Review with the user
 
-Show the title, description and cards as a compact table and ask if they want changes before importing. Apply edits to `set.json`.
+Show the title, description, tags and cards as a compact table and ask if they want changes before importing. Apply edits to `set.json`.
 
 ## 4. Import with the `repaso` CLI
 
@@ -65,3 +71,5 @@ pnpm -s repaso sets create "$SCRATCH/set.json" --json
 - Targets https://repaso.me by default. For a local dev server add `--api http://localhost:3000` (and log in to that host separately).
 - If it says "Not logged in", ask the user to run `! pnpm repaso login` (opens the browser to authorize the machine), then retry. Check who you're acting as with `pnpm -s repaso whoami`.
 - A 400 lists the invalid fields; fix `set.json` and retry. Don't create the set twice: on any unclear failure, check `pnpm -s repaso sets list --json` first.
+
+- To fix the title, description or tags of an existing set: `pnpm -s repaso sets update <id> --title "…" --tag "…" --tag "…"` (`--tag` replaces all tags).

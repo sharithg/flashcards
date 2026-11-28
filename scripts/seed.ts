@@ -33,6 +33,7 @@ async function main() {
         userId,
         title: set.title,
         description: set.description,
+        tags: set.tags,
         createdAt: new Date(set.createdAt),
         updatedAt: new Date(set.updatedAt),
       });
